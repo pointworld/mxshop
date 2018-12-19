@@ -39,7 +39,6 @@ AUTH_USER_MODEL = 'users.UserProfile'
 # Application definition
 
 INSTALLED_APPS = [
-    'DjangoUeditor',
     'users',
     'goods',
     'trade',
@@ -124,15 +123,21 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# 语言默认是 en-us，这里改为中文
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'UTC'
+# 时区默认是 UTC，这里改为上海
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# 数据库存储使用时间，设置为 True 的话，时间会被存为 UTC 的时间
+# USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

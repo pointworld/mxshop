@@ -4,9 +4,6 @@ from datetime import datetime
 
 from django.db import models
 
-from DjangoUeditor.models import UEditorField
-
-
 # Create your models here.
 
 
@@ -80,8 +77,9 @@ class Goods(models.Model):
     sn = models.CharField(max_length=50, default='', verbose_name='serial number')
     name = models.CharField(max_length=100, verbose_name='name', help_text='name')
     brief = models.TextField(max_length=500, verbose_name='brief')
-    desc = UEditorField(imagePath='goods/images/', filePath='goods/images/', width=1000, height=300,
-                        verbose_name='description', help_text='description')
+    desc = models.TextField(max_length=2000, verbose_name='desc')
+    # desc = UEditorField(imagePath='goods/images/', filePath='goods/images/', width=1000, height=300,
+    #                     verbose_name='description', help_text='description')
     hit_nums = models.IntegerField(default=0, verbose_name='hit nums')
     fav_nums = models.IntegerField(default=0, verbose_name='fav nums')
     stock_nums = models.IntegerField(default=0, verbose_name='stock nums')
