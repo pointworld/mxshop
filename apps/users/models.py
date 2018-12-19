@@ -24,7 +24,7 @@ class UserProfile(AbstractUser):
     # 1. 设置 null=True, blank=True
     # 2. 设置 default=''
 
-    username = models.CharField(max_length=30, null=True, blank=True, verbose_name='username')
+    name = models.CharField(max_length=30, null=True, blank=True, unique=True, verbose_name='user name')
     # 出生日期，年龄可以通过出生日期推算
     birthday = models.DateField(null=True, blank=True, verbose_name='birthday')
     # 性别，只能是男或女，默认女

@@ -52,7 +52,7 @@ class OrderInfo(models.Model):
     # 支付状态
     pay_status = models.CharField(choices=PAY_STATUS, default='paying', max_length=20, verbose_name='pay status')
     # 支付类型
-    pay_type = models.CharField(choices=PAY_TYPE, default='alipay', verbose_name='pay type')
+    pay_type = models.CharField(max_length=20, choices=PAY_TYPE, default='alipay', verbose_name='pay type')
     # 订单留言
     order_additional_msg = models.CharField(max_length=200, verbose_name='message left by user')
     # 订单总额
