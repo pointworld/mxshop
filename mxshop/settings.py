@@ -32,6 +32,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# 此处重载是为了使我们的 UserProfile 生效
+AUTH_USER_MODEL = 'users.UserProfile'
+
 
 # Application definition
 
