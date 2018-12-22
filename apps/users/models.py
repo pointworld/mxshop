@@ -1,4 +1,4 @@
-# _*_ encoding:utf8 _*_
+# _*_ encoding:utf-8 _*_
 
 from datetime import datetime
 
