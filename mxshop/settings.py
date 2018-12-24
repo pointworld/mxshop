@@ -205,3 +205,11 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'JWT',
     # 'JWT_AUTH_COOKIE': None,
 }
+
+
+# 手机号码的正则表达式
+REGEXP_MOBILE = '^1[358]\d{9}$|^147\d{8}$|^176\d{8}$'
+
+
+# 云片网设置
+APIKEY = 'apikey 的值'
