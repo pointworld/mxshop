@@ -20,6 +20,8 @@ from django.views.static import serve
 from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 
+from rest_framework_jwt.views import obtain_jwt_token
+
 from mxshop.settings import MEDIA_ROOT
 from goods.views import GoodsListViewSet, CategoryViewSet
 
@@ -37,4 +39,7 @@ urlpatterns = [
     path('docs/', include_docs_urls(title='mxshop')),
     path('api-auth/', include('rest_framework.urls')),
     path('', include(router.urls)),
+
+    # jwt 的认证接口
+    path('login/', obtain_jwt_token),
 ]
