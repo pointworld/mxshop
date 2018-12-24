@@ -35,7 +35,7 @@ class UserProfile(AbstractUser):
         default='female',
     )
     # mobile = models.CharField(max_length=11, null=True, blank=True, verbose_name='mobile')
-    mobile = models.CharField(max_length=11, verbose_name='mobile')
+    mobile = models.CharField(null=True, blank=True, max_length=11, verbose_name='mobile')
     email = models.EmailField(max_length=100, null=True, blank=True, verbose_name='email')
 
     class Meta:
