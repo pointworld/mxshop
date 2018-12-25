@@ -22,9 +22,10 @@ class UserFav(models.Model):
     class Meta:
         verbose_name = 'user fav'
         verbose_name_plural = verbose_name
+        unique_together = ('user', 'goods')
 
     def __str__(self):
-        return self.user.name
+        return self.user.username
 
 
 class UserLeavingMessage(models.Model):
