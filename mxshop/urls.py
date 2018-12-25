@@ -25,7 +25,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from mxshop.settings import MEDIA_ROOT
 from goods.views import GoodsListViewSet, CategoryViewSet
 from users.views import SmsCodeViewSet, UserViewSet
-from user_operation.views import UserFavViewSet, UserLeavingMessageViewSet
+from user_operation.views import UserFavViewSet, UserLeavingMessageViewSet, UserAddressViewSet
 
 router = DefaultRouter()
 
@@ -41,11 +41,14 @@ router.register('codes', SmsCodeViewSet, base_name='codes')
 # 配置 Users 的 URL
 router.register('users', UserViewSet, base_name='users')
 
-# 配置 收藏 的 URL
+# 配置 用户收藏 的 URL
 router.register('user_favs', UserFavViewSet, base_name='user_favs')
 
-# 配置 留言 的 URL
+# 配置 用户留言 的 URL
 router.register('user_message', UserLeavingMessageViewSet, base_name='user_message')
+
+# 配置 用户地址 的 URL
+router.register('user_address', UserAddressViewSet, base_name='user_address')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
