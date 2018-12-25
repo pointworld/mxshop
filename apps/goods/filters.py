@@ -18,8 +18,6 @@ class GoodsFilter(django_filters.filterset.FilterSet):
 
     price_min = django_filters.NumberFilter(field_name='shop_price', lookup_expr='gte')
     price_max = django_filters.NumberFilter(field_name='shop_price', lookup_expr='lte')
-    name = django_filters.CharFilter(field_name='name', lookup_expr='contains')
-
     top_category = django_filters.NumberFilter(method='top_category_filter')
 
     def top_category_filter(self, queryset, name, value):
@@ -31,4 +29,4 @@ class GoodsFilter(django_filters.filterset.FilterSet):
 
     class Meta:
         model = Goods
-        fields = ['price_min', 'price_max', 'name']
+        fields = ['price_min', 'price_max', 'is_hot']
