@@ -43,7 +43,20 @@ class SmsSerializer(serializers.Serializer):
         return mobile
 
 
+class UserDetailSerializer(serializers.ModelSerializer):
+    """
+    用户详情序列化
+    """
+
+    class Meta:
+        model = User
+        fields = ('name', 'gender', 'birthday', 'email', 'mobile')
+
+
 class UserRegisterSerializer(serializers.ModelSerializer):
+    """
+    用户注册序列化
+    """
     code = serializers.CharField(label='验证码', required=True, write_only=True, max_length=4, min_length=4,
                                  help_text='验证码',
                                  error_messages={
