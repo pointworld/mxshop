@@ -83,7 +83,7 @@ class OrderGoods(models.Model):
     """
 
     # 一个订单对应多个商品，所以添加外键
-    order = models.ForeignKey(OrderInfo, verbose_name='order info', on_delete=models.CASCADE)
+    order = models.ForeignKey(OrderInfo, verbose_name='order info', on_delete=models.CASCADE, related_name='goods')
     # 两个外键形成一张关联表
     goods = models.ForeignKey(Goods, verbose_name='goods', on_delete=models.CASCADE)
     goods_nums = models.IntegerField(default=0, verbose_name='goods nums')

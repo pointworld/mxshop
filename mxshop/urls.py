@@ -24,7 +24,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 
 from mxshop.settings import MEDIA_ROOT
 from goods.views import GoodsListViewSet, CategoryViewSet
-from trade.views import ShoppingCartViewSet
+from trade.views import ShoppingCartViewSet, OrderViewSet
 from users.views import SmsCodeViewSet, UserViewSet
 from user_operation.views import UserFavViewSet, UserLeavingMessageViewSet, UserAddressViewSet
 
@@ -53,6 +53,9 @@ router.register('user_address', UserAddressViewSet, base_name='user_address')
 
 # 配置 购物车 的 URL
 router.register('shopping_carts', ShoppingCartViewSet, base_name='shopping_carts')
+
+# 配置 订单 的 URL
+router.register('orders', OrderViewSet, base_name='orders')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
