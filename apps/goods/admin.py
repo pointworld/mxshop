@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Goods, GoodsCategory, GoodsCategoryBrand, GoodsImage, Banner
+from .models import Goods, GoodsCategory, GoodsCategoryBrand, GoodsImage, Banner, IndexGoodsAd
 
 
 # Register your models here.
@@ -39,8 +39,15 @@ class BannerAdmin(admin.ModelAdmin):
     search_fields = ['goods', 'image', 'index']
 
 
+class IndexGoodsAdAdmin(admin.ModelAdmin):
+    list_display = ['category', 'goods']
+    list_filter = ['category', 'goods']
+    search_fields = ['category', 'goods']
+
+
 admin.site.register(Goods, GoodsAdmin)
 admin.site.register(GoodsCategory, GoodsCategoryAdmin)
 admin.site.register(GoodsCategoryBrand, GoodsCategoryBrandAdmin)
 admin.site.register(GoodsImage, GoodsImageAdmin)
 admin.site.register(Banner, BannerAdmin)
+admin.site.register(IndexGoodsAd, IndexGoodsAdAdmin)

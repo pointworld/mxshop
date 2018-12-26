@@ -100,6 +100,18 @@ class Goods(models.Model):
         return self.name
 
 
+class IndexGoodsAd(models.Model):
+    category = models.ForeignKey(GoodsCategory, verbose_name='category', on_delete=models.CASCADE)
+    goods = models.ForeignKey(Goods, verbose_name='goods', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = '首页商品类别广告'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.goods.name
+
+
 class GoodsImage(models.Model):
     """
     商品详情页轮播图
