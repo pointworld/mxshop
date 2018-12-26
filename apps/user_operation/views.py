@@ -8,6 +8,7 @@ from rest_framework.authentication import SessionAuthentication
 from user_operation.serializers import UserFavSerializer, UserFavDetailSerializer, UserLeavingMessageSerializer, UserAddressSerializer
 from .models import UserFav, UserLeavingMessage, UserAddress
 from utils.permissions import IsOwnerOrReadOnly
+import user_operation.signals
 
 
 # Create your views here.
