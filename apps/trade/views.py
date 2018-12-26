@@ -1,6 +1,11 @@
 # Create your views here.
+
 import time
+from datetime import datetime
+
 from random import Random
+
+from django.shortcuts import redirect
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -70,3 +75,110 @@ class OrderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Crea
 
             shopping_cart.delete()
         return order
+
+
+from rest_framework.views import APIView
+from utils.alipay import AliPay
+from mxshop.settings import PRIVATE_KEY_PATH, ALIPAY_PUB_KEY_PATH
+from rest_framework.response import Response
+
+
+class AlipayView(APIView):
+    def get(self, request):
+        """
+        处理支付宝的 return_url 返回
+        :param request:
+        :return:
+        """
+        processed_dict = {}
+        for key, value in request.GET.items():
+            processed_dict[key] = value
+
+        sign = processed_dict.pop('sign', None)
+
+        # 测试用例
+        alipay = AliPay(
+            # appid 在沙箱环境中就可以找到
+            appid="2016092300575055",
+            # 这个值先不管，在与 vue 的联调中介绍
+            app_notify_url="http://132.232.184.182:8000/alipay/return/",
+            # 我们自己商户的密钥
+            app_private_key_path=PRIVATE_KEY_PATH,
+            # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
+            alipay_public_key_path=ALIPAY_PUB_KEY_PATH,
+            # 先不用管，后面 vue 解释
+            return_url="http://132.232.184.182:8000/alipay/return/",
+            # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False
+            debug=True,
+        )
+
+        verify_ret = alipay.verify(processed_dict, sign)
+        if verify_ret is True:
+            order_sn = processed_dict.get('out_trade_no', None)
+            trade_no = processed_dict.get('trade_no', None)
+            # FIXME: 支付宝接口会先发起post请求，再响应get请求。而returnurl的返回参数中并不包含我们的支付状态，所以会导致原本被post请求写入的支付状态被get请求获取不到的默认值none覆盖为空
+            # trade_status = processed_dict.get('trade_status', None)
+            trade_status = processed_dict.get('trade_status', 'TRADE_SUCCESS')
+
+            existed_orders = OrderInfo.objects.filter(order_sn=order_sn)
+            for existed_order in existed_orders:
+                existed_order.pay_status = trade_status
+                existed_order.trade_no = trade_no
+                existed_order.pay_time = datetime.now()
+                existed_order.save()
+
+            response = redirect('/index/#/app/home/member/order')
+            # response.set_cookie('nextPath', 'pay', max_age=2)
+
+            return response
+        else:
+            return redirect('index')
+
+    def post(self, request):
+        """
+        处理支付宝的 notify_url
+        :param request:
+        :return:
+        """
+        # 1. 先将 sign 剔除掉
+        processed_dict = {}
+        for key, value in request.POST.items():
+            processed_dict[key] = value
+
+        sign = processed_dict.pop('sign', None)
+
+        # 2. 生成一个 Alipay 对象
+        alipay = AliPay(
+            # appid 在沙箱环境中就可以找到
+            appid="2016092300575055",
+            # 这个值先不管，在与 vue 的联调中介绍
+            app_notify_url="http://132.232.184.182:8000/alipay/return/",
+            # 我们自己商户的密钥
+            app_private_key_path=PRIVATE_KEY_PATH,
+            # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
+            alipay_public_key_path=ALIPAY_PUB_KEY_PATH,
+            # 先不用管，后面 vue 解释
+            return_url="http://132.232.184.182:8000/alipay/return/",
+            # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False
+            debug=True,
+        )
+
+        # 3. 进行验签，确保这是支付宝给我们的
+        verify_ret = alipay.verify(processed_dict, sign)
+
+        # 如果验签成功
+        if verify_ret is True:
+            order_sn = processed_dict.get('out_trade_no', None)
+            trade_no = processed_dict.get('trade_no', None)
+            trade_status = processed_dict.get('trade_status', None)
+
+            # 查询数据库中存在的订单
+            existed_orders = OrderInfo.objects.filter(order_sn=order_sn)
+            for existed_order in existed_orders:
+                existed_order.pay_status = trade_status
+                existed_order.trade_no = trade_no
+                existed_order.pay_time = datetime.now()
+                existed_order.save()
+
+            # 将success返回给支付宝，支付宝就不会一直不停的继续发消息了
+            return Response('success')

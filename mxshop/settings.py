@@ -30,7 +30,7 @@ SECRET_KEY = 'rbjvvf#dsm5!+5d51aod8%10-r4@jcwe4lkj3bxe@mx%rv2*t('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # 此处重载是为了使我们的 UserProfile 生效
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -100,8 +100,10 @@ DATABASES = {
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'NAME': 'mxshop',
         'USER': 'root',
-        'PASSWORD': '1.',
-        'HOST': '127.0.0.1',
+        # 'PASSWORD': '1.',
+        'PASSWORD': '123456',
+        # 'HOST': '127.0.0.1',
+        'HOST': '132.232.184.182',
         'PORT': 3306,
         'OPTIONS': { 'init_command': 'SET default_storage_engine=INNODB;' },
     }
@@ -151,6 +153,10 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -212,3 +218,8 @@ REGEXP_MOBILE = '^1[358]\d{9}$|^147\d{8}$|^176\d{8}$'
 
 # 云片网设置
 APIKEY = 'apikey 的值'
+
+
+# 支付宝相关配置
+PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/trade/keys/private_2048.txt')
+ALIPAY_PUB_KEY_PATH = os.path.join(BASE_DIR, 'apps/trade/keys/alipay_key_2048.txt')

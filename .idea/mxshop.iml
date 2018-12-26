@@ -18,7 +18,7 @@
       <sourceFolder url="file://$MODULE_DIR$/extra_apps" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Remote Python 3.7.1 (sftp://root@132.232.184.182:22/root/.virtualenvs/mxshop/bin/python3)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">

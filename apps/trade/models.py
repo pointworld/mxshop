@@ -34,9 +34,11 @@ class OrderInfo(models.Model):
     """
 
     PAY_STATUS = (
-        ('success', 'trade success'),
-        ('cancel', 'trade cancel'),
-        ('paying', 'waiting for paying'),
+        ('WAIT_BUYER_PAY', '交易创建'),
+        ('TRADE_SUCCESS', '支付成功'),
+        ('TRADE_FINISHED', '交易完成'),
+        ('TRADE_CLOSED', '交易关闭'),
+        ('paying', '待支付'),
     )
 
     PAY_TYPE = (

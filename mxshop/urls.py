@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.static import serve
+from django.views.generic import TemplateView
 from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 
@@ -25,6 +26,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from mxshop.settings import MEDIA_ROOT
 from goods.views import GoodsListViewSet, CategoryViewSet
 from trade.views import ShoppingCartViewSet, OrderViewSet
+from trade.views import AlipayView
 from users.views import SmsCodeViewSet, UserViewSet
 from user_operation.views import UserFavViewSet, UserLeavingMessageViewSet, UserAddressViewSet
 
@@ -57,13 +59,17 @@ router.register('shopping_carts', ShoppingCartViewSet, base_name='shopping_carts
 # 配置 订单 的 URL
 router.register('orders', OrderViewSet, base_name='orders')
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path('media/(?P<path>.*)', serve, {'document_root': MEDIA_ROOT}),
     path('docs/', include_docs_urls(title='mxshop')),
     path('api-auth/', include('rest_framework.urls')),
     path('', include(router.urls)),
-
+    # 首页
+    path('index/', TemplateView.as_view(template_name='index.html'), name='index'),
     # jwt 的认证接口
     path('login/', obtain_jwt_token),
+    # 配置 支付宝 的接口
+    path('alipay/return/', AlipayView.as_view(), name='alipay'),
 ]
