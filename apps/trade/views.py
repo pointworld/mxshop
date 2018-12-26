@@ -200,6 +200,14 @@ class AlipayView(APIView):
             # 查询数据库中存在的订单
             existed_orders = OrderInfo.objects.filter(order_sn=order_sn)
             for existed_order in existed_orders:
+
+                # 商品销量
+                order_goods = existed_order.goods.all()
+                for order_good in order_goods:
+                    goods = order_good.goods
+                    goods.sold_nums += order_good.goods_nums
+                    goods.save()
+
                 existed_order.pay_status = trade_status
                 existed_order.trade_no = trade_no
                 existed_order.pay_time = datetime.now()
