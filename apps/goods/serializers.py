@@ -6,7 +6,7 @@ __date__ = '2018-12-22'
 
 from rest_framework import serializers
 
-from goods.models import Goods, GoodsCategory, GoodsImage
+from goods.models import Goods, GoodsCategory, GoodsImage, Banner
 
 
 class CategorySerializer3(serializers.ModelSerializer):
@@ -47,3 +47,8 @@ class GoodsSerializer(serializers.ModelSerializer):
         # fields = ('name', 'hit_nums', 'market_price', 'add_time',)
         fields = '__all__'
 
+
+class BannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banner
+        fields = '__all__'
