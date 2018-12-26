@@ -44,6 +44,31 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return ShoppingCart.objects.filter(user=self.request.user)
 
+    # 库存数-1
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        goods = instance.goods
+        goods.stock_nums -= 1
+        goods.save()
+
+    # 库存数+1
+    def perform_destroy(self, instance):
+        goods = instance.goods
+        goods.stock_nums += 1
+        goods.save()
+        instance.delete()
+
+    # 更新库存
+    def perform_update(self, serializer):
+        cart = ShoppingCart.objects.get(id=serializer.instance.id)
+        nums_in_cart = cart.nums
+        saved_record = serializer.save()
+        # 变化的数量
+        nums = nums_in_cart - saved_record.nums
+        goods = saved_record.goods
+        goods.stock_nums += nums
+        goods.save()
+
 
 class OrderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin, mixins.DestroyModelMixin,
                    viewsets.GenericViewSet):
