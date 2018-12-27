@@ -1,5 +1,6 @@
 from rest_framework import generics, viewsets, mixins, filters
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
@@ -29,6 +30,7 @@ class GoodsListViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.Retriev
     queryset = Goods.objects.all()
     serializer_class = GoodsSerializer
     pagination_class = GoodsPagination
+    throttle_classes = (UserRateThrottle, AnonRateThrottle)
     filter_backends = (DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     filter_class = GoodsFilter
     search_fields = ('name', 'desc', 'brief')
