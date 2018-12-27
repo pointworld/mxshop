@@ -4,6 +4,8 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 
+from rest_framework_extensions.cache.mixins import CacheResponseMixin
+
 from goods.filters import GoodsFilter
 from .serializers import GoodsSerializer, CategorySerializer, BannerSerializer, IndexCategorySerializer
 from .models import Goods, GoodsCategory, Banner
@@ -19,7 +21,7 @@ class GoodsPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class GoodsListViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class GoodsListViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     商品列表页
     """
@@ -40,7 +42,7 @@ class GoodsListViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewset
         return Response(serializer.data)
 
 
-class CategoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class CategoryViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     list:
     商品分类列表数据
@@ -51,7 +53,7 @@ class CategoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets
     serializer_class = CategorySerializer
 
 
-class BannerViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class BannerViewSet(CacheResponseMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     获取首页轮播图列表
     """
@@ -59,7 +61,7 @@ class BannerViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = BannerSerializer
 
 
-class IndexCategoryViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class IndexCategoryViewSet(CacheResponseMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     首页商品分类数据
     """

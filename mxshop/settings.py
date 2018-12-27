@@ -35,7 +35,6 @@ ALLOWED_HOSTS = ['*']
 # 此处重载是为了使我们的 UserProfile 生效
 AUTH_USER_MODEL = 'users.UserProfile'
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -89,7 +88,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mxshop.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
@@ -105,10 +103,9 @@ DATABASES = {
         'HOST': '127.0.0.1',
         # 'HOST': '132.232.184.182',
         'PORT': 3306,
-        'OPTIONS': { 'init_command': 'SET default_storage_engine=INNODB;' },
+        'OPTIONS': {'init_command': 'SET default_storage_engine=INNODB;'},
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -127,7 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -148,7 +144,6 @@ USE_L10N = True
 # USE_TZ = True
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
@@ -161,12 +156,10 @@ STATICFILES_DIRS = (
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 # 设置邮箱和用户名和手机号均可登录
 AUTHENTICATION_BACKENDS = (
     'users.views.CustomBackend',
 )
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -174,7 +167,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
-
 
 JWT_AUTH = {
     # 'JWT_ENCODE_HANDLER':
@@ -211,15 +203,17 @@ JWT_AUTH = {
     # 'JWT_AUTH_COOKIE': None,
 }
 
-
 # 手机号码的正则表达式
 REGEXP_MOBILE = '^1[358]\d{9}$|^147\d{8}$|^176\d{8}$'
-
 
 # 云片网设置
 APIKEY = 'apikey 的值'
 
-
 # 支付宝相关配置
 PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/trade/keys/private_2048.txt')
 ALIPAY_PUB_KEY_PATH = os.path.join(BASE_DIR, 'apps/trade/keys/alipay_key_2048.txt')
+
+# drf 插件相关设置
+REST_FRAMEWORK_EXTENSIONS = {
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 5
+}
