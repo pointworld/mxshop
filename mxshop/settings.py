@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_filters',
     'corsheaders',
     'rest_framework.authtoken',
+    'social_django',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -81,6 +82,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -156,9 +159,15 @@ STATICFILES_DIRS = (
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# 设置邮箱和用户名和手机号均可登录
+# 认证
 AUTHENTICATION_BACKENDS = (
+    # 设置邮箱和用户名和手机号均可登录
     'users.views.CustomBackend',
+    # 第三方登录
+    'social_core.backends.weibo.WeiboOAuth2',
+    'social_core.backends.weixin.WeixinOAuth2',
+    'social_core.backends.qq.QQOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 REST_FRAMEWORK = {
@@ -236,3 +245,15 @@ CACHES = {
         }
     }
 }
+
+# 第三方登录
+SOCIAL_AUTH_WEIBO_KEY = '545785279'
+SOCIAL_AUTH_WEIBO_SECRET = 'd0e9b79451bc50237a38bf42c71be563'
+
+SOCIAL_AUTH_QQ_KEY = ''
+SOCIAL_AUTH_QQ_SECRET = ''
+
+SOCIAL_AUTH_WEIXIN_KEY = ''
+SOCIAL_AUTH_WEIXIN_SECRET = ''
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index/'
