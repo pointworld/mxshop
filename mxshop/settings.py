@@ -215,5 +215,16 @@ ALIPAY_PUB_KEY_PATH = os.path.join(BASE_DIR, 'apps/trade/keys/alipay_key_2048.tx
 
 # drf 插件相关设置
 REST_FRAMEWORK_EXTENSIONS = {
-    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 5
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60
+}
+
+# 配置 Redis 缓存
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
 }
