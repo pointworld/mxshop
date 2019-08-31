@@ -4,9 +4,10 @@
 __author__ = 'point'
 __date__ = '2018-12-22'
 
-'''
-独立使用 Django 的 model
-'''
+"""
+独立使用 Django 的 model，导入商品数据
+"""
+
 
 import os
 import sys
@@ -30,6 +31,7 @@ for goods_detail in row_data:
     goods.shop_price = float(int(goods_detail['sale_price'].replace('￥', '').replace('元', '')))
     goods.brief = goods_detail['desc'] if goods_detail['desc'] is not None else ''
     goods.desc = goods_detail['goods_desc'] if goods_detail['goods_desc'] is not None else ''
+    # 取第一张作为封面图
     goods.cover = goods_detail['images'][0] if goods_detail['images'] else ''
 
     category_name = goods_detail['categorys'][-1]

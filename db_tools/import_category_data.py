@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # _*_ coding: utf-8 _*_
 
-'''
-独立使用 Django 的 model
-'''
+"""
+独立使用 Django 的 model，导入商品类别数据
+"""
 
 __author__ = 'point'
 __date__ = '2018-12-19'
@@ -11,11 +11,14 @@ __date__ = '2018-12-19'
 import os
 import sys
 
+# 获取当前文件的目录（运行脚本）
 pwd = os.path.dirname(os.path.realpath(__file__))
+# 将项目根目录添加到 python 模块查找路径中
 sys.path.append(pwd + '../')
-# manage.py 中
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mxshop.settings')
 
+# 要想单独使用 django 的 model，必须指定一个环境变量，会去 settings 配置找
+# 参照 manage.py 里面就知道为什么这样设置了
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mxshop.settings')
 import django
 django.setup()
 
