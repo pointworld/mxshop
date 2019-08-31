@@ -19,6 +19,7 @@ ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'users.UserProfile'
 
 INSTALLED_APPS = [
+    'simpleui',
     'users',
     'goods',
     'trade',

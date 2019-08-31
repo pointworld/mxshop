@@ -9,6 +9,7 @@ django-crispy-forms==1.7.2
 django-filter==2.0.0
 django-guardian==1.4.9
 django-redis==4.10.0
+django-simpleui==2.8
 djangorestframework==3.10.2
 djangorestframework-jwt==1.11.0
 djangorestframework-simplejwt==3.3
