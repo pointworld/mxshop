@@ -19,16 +19,27 @@ ALLOWED_HOSTS = ['*']
 AUTH_USER_MODEL = 'users.UserProfile'
 
 INSTALLED_APPS = [
+    # 第三方应用：替换 Django 原生 admin 后台页面
     'simpleui',
+
+    # 自定义应用：用户
     'users',
+    # 自定义应用：商品
     'goods',
+    # 自定义应用：交易
     'trade',
+    # 自定义应用：用户操作
     'user_operation',
+
+    # 第三方应用
     'rest_framework',
     'django_filters',
     'corsheaders',
     'rest_framework.authtoken',
     'social_django',
+    'froala_editor',
+
+    # 原生应用
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

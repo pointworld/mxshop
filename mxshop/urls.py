@@ -55,6 +55,7 @@ urlpatterns = [
     re_path('media/(?P<path>.*)', serve, {'document_root': MEDIA_ROOT}),
     path('docs/', include_docs_urls(title='mxshop')),
     path('api-auth/', include('rest_framework.urls')),
+    path('froala_editor/', include('froala_editor.urls')),
     path('', include(router.urls)),
     # 首页
     path('index/', TemplateView.as_view(template_name='index.html'), name='index'),

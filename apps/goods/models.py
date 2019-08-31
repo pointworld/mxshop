@@ -1,10 +1,7 @@
-# _*_ coding: utf-8 _*_
-
 from datetime import datetime
 
 from django.db import models
-
-# Create your models here.
+from froala_editor.fields import FroalaField
 
 
 class GoodsCategory(models.Model):
@@ -13,31 +10,32 @@ class GoodsCategory(models.Model):
     """
 
     CATEGORY_TYPE = (
-        (1, 'first'),
-        (2, 'second'),
-        (3, 'third'),
+        (1, '一级类目'),
+        (2, '二级类目'),
+        (3, '三级类目'),
     )
 
     # help_text: 生成接口测试文档时会用到的
     # related_name: 在后面进行查询的时候会用到
 
-    # 商品类别名
-    name = models.CharField(max_length=30, default='', verbose_name='category name', help_text='category name')
-    # 商品类别编码，code 不能是中文，可以用于查找
-    code = models.CharField(max_length=30, default='', verbose_name='category code', help_text='category code')
-    # 商品类别描述
-    desc = models.TextField(default='', verbose_name='category description', help_text='category description')
-    # 类的级别
-    category_type = models.IntegerField(choices=CATEGORY_TYPE, verbose_name='category type', help_text='category type')
-    # 类的父类
-    parent_category = models.ForeignKey('self', null=True, blank=True, verbose_name='parent category',
-                                        on_delete=models.CASCADE, help_text='parent category', related_name='sub_cat')
+    name = models.CharField(max_length=30, default='', verbose_name='类别名', help_text='类别名')
+    code = models.CharField(max_length=30, default='', verbose_name='类别 code', help_text='类别 code')
+    desc = models.TextField(default='', verbose_name='类别描述', help_text='类别描述')
+    category_type = models.IntegerField(choices=CATEGORY_TYPE, verbose_name='类目级别', help_text='类目级别')
+    parent_category = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name='sub_cat',
+        verbose_name='父类别',
+        help_text='父类别')
     # 是否放到 tab 栏
-    is_tab = models.BooleanField(default=False, verbose_name='is tab', help_text='is tab')
-    add_time = models.DateTimeField(default=datetime.now, verbose_name='add time')
+    is_tab = models.BooleanField(default=False, verbose_name='是否导航', help_text='是否导航')
+    add_time = models.DateTimeField(default=datetime.now, verbose_name='添加时间')
 
     class Meta:
-        verbose_name = 'goods category'
+        verbose_name = '商品类别'
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -70,18 +68,17 @@ class Goods(models.Model):
     商品
     """
 
-    # 外键：商品的类别
-    category = models.ForeignKey(GoodsCategory, on_delete=models.CASCADE,
-                                 verbose_name='category')
-    # 默认生成的 id 是数据库做关联，查询用的，但是实际商品还有自己的 sn 码
-    sn = models.CharField(max_length=50, default='', verbose_name='serial number')
-    name = models.CharField(max_length=100, verbose_name='name', help_text='name')
-    brief = models.TextField(max_length=500, verbose_name='brief')
-    desc = models.TextField(max_length=2000, verbose_name='desc')
+    category = models.ForeignKey(GoodsCategory, on_delete=models.CASCADE, verbose_name='商品类目')
+    # 默认生成的 id 是数据库做关联，查询用的，但是实际商品还有自己的 sn 码（serial number）
+    sn = models.CharField(max_length=50, default='', verbose_name='商品唯一货号')
+    name = models.CharField(max_length=100, verbose_name='商品名', help_text='商品名')
+    brief = models.TextField(max_length=500, verbose_name='商品简介')
+    desc = FroalaField()
+    # desc = models.TextField(max_length=2000, verbose_name='商品描述')
     # desc = UEditorField(imagePath='goods/images/', filePath='goods/images/', width=1000, height=300,
     #                     verbose_name='description', help_text='description')
-    hit_nums = models.IntegerField(default=0, verbose_name='hit nums')
-    fav_nums = models.IntegerField(default=0, verbose_name='fav nums')
+    hit_nums = models.IntegerField(default=0, verbose_name='点击数')
+    fav_nums = models.IntegerField(default=0, verbose_name='收藏数')
     stock_nums = models.IntegerField(default=0, verbose_name='stock nums')
     sold_nums = models.IntegerField(default=0, verbose_name='sold nums')
     market_price = models.FloatField(default=0, verbose_name='market price')
