@@ -1,4 +1,4 @@
-from rest_framework import generics, viewsets, mixins, filters
+from rest_framework import viewsets, mixins, filters
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
@@ -10,9 +10,6 @@ from rest_framework_extensions.cache.mixins import CacheResponseMixin
 from goods.filters import GoodsFilter
 from .serializers import GoodsSerializer, CategorySerializer, BannerSerializer, IndexCategorySerializer
 from .models import Goods, GoodsCategory, Banner
-
-
-# Create your views here.
 
 
 class GoodsPagination(PageNumberPagination):

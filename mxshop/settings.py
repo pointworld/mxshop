@@ -158,6 +158,9 @@ REST_FRAMEWORK = {
         'anon': '100/day',
         'user': '1000/day'
     },
+
+    # 用于修复打开 docs/ 时的 bug
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
 }
 
 JWT_AUTH = {

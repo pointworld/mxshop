@@ -1,9 +1,4 @@
-#!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
 from django.db.models import Q
-
-__author__ = 'point'
-__date__ = '2018-12-22'
 
 from rest_framework import serializers
 
