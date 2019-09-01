@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
-
-__author__ = 'point'
-__date__ = '2018-12-25'
-
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -19,6 +13,7 @@ class UserFavDetailSerializer(serializers.ModelSerializer):
 
 
 class UserFavSerializer(serializers.ModelSerializer):
+    # 获取当前登录的用户
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
@@ -34,6 +29,7 @@ class UserFavSerializer(serializers.ModelSerializer):
             )
         ]
 
+        # 收藏的时候需要返回商品的 id，因为取消收藏的时候必须知道商品的 id 是多少
         fields = ('user', 'goods', 'id')
 
 

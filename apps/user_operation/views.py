@@ -24,11 +24,16 @@ class UserFavViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.Retr
     create
         收藏商品
     """
+
+    # permission 是用来做权限判断的
+    # IsAuthenticated：必须登录用户；IsOwnerOrReadOnly：必须是当前登录的用户
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    # auth 使用来做用户认证的
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
     lookup_field = 'goods_id'
 
     def get_queryset(self):
+        # 只能查看当前登录用户的收藏，不会获取所有用户的收藏
         return UserFav.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):

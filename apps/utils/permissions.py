@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
-
-__author__ = 'point'
-__date__ = '2018-12-25'
-
 from rest_framework import permissions
 
 
@@ -20,4 +14,5 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
 
         # Instance must have an attribute named `owner`.
+        # obj 相当于数据库中的 model，这里要把 owner 改为我们数据库中的 user
         return obj.user == request.user
