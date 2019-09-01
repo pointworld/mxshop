@@ -15,7 +15,6 @@ from users.models import AuthCode
 from .serializers import SmsSerializer, UserRegisterSerializer, UserDetailSerializer
 from utils.yunpian import YunPian
 
-
 User = get_user_model()
 
 
@@ -67,6 +66,7 @@ class UserViewSet(CreateModelMixin, mixins.UpdateModelMixin, mixins.RetrieveMode
     """
     用户
     """
+
     serializer_class = UserRegisterSerializer
     queryset = User.objects.all()
     authentication_classes = (JSONWebTokenAuthentication, authentication.SessionAuthentication)
@@ -98,7 +98,7 @@ class UserViewSet(CreateModelMixin, mixins.UpdateModelMixin, mixins.RetrieveMode
         ret_dict['name'] = user.name if user.name else user.username
 
         headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        return Response(ret_dict, status=status.HTTP_201_CREATED, headers=headers)
 
     def get_object(self):
         return self.request.user

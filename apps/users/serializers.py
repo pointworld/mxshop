@@ -9,7 +9,6 @@ from rest_framework.validators import UniqueValidator
 
 from users.models import AuthCode
 
-
 User = get_user_model()
 
 
@@ -53,45 +52,33 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     """
     用户注册序列化
     """
-    code = serializers.CharField(label='验证码', required=True, write_only=True, max_length=4, min_length=4,
+
+    code = serializers.CharField(label='验证码', required=True, write_only=True, min_length=4, max_length=4,
                                  help_text='验证码',
                                  error_messages={
                                      'blank': '请输入验证码',
                                      'required': '请输入验证码',
+                                     'min_length': '验证码格式错误',
                                      'max_length': '验证码格式错误',
-                                     'min_length': '验证码格式错误'
                                  })
 
-    username = serializers.CharField(label='用户名', help_text='用户名', required=True,
-                                     allow_blank=False,
-                                     validators=[
-                                         UniqueValidator(queryset=User.objects.all(),
-                                                         message='用户已经存在')
-                                     ])
-    password = serializers.CharField(
-        style={'input_type': 'password'},
-        label='密码',
-        write_only=True,
-    )
+    username = serializers.CharField(label='用户名', help_text='用户名', required=True, allow_blank=False,
+                                     validators=[UniqueValidator(queryset=User.objects.all(), message='用户已经存在')])
+    password = serializers.CharField(style={'input_type': 'password'}, label='密码', write_only=True)
 
     def create(self, validated_data):
-        user = super(UserRegisterSerializer, self).create(validated_data=validated_data)
+        user = super().create(validated_data=validated_data)
+        # 密码加密保存
         user.set_password(validated_data['password'])
         user.save()
         return user
 
     def validate_code(self, code):
-        # get与filter的区别: get有两种异常，一个是有多个，一个是一个都没有。
-        # try:
-        #     verify_records = VerifyCode.objects.get(mobile=self.initial_data["username"], code=code)
-        # except VerifyCode.DoesNotExist as e:
-        #     pass
-        # except VerifyCode.MultipleObjectsReturned as e:
-        #     pass
-
-        # 验证码在数据库中是否存在，用户从前端 post 过来的值都会放入 initial_data 里面，排序(最新一条)。
+        # 验证码在数据库中是否存在，用户从前端 post 过来的值都会放入 initial_data 里面，排序(最新一条)
+        # username 就是用户注册的手机号，验证码按添加时间倒序排序，为了后面验证过期，错误等
         verify_records = AuthCode.objects.filter(mobile=self.initial_data['username']).order_by('-add_time')
         if verify_records:
+            # 最近的一个验证码
             last_record = verify_records[0]
 
             # 有效期为五分钟
