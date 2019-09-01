@@ -31,9 +31,11 @@ INSTALLED_APPS = [
     # 自定义应用：用户操作
     'user_operation',
 
-    # 第三方应用
+    # 第三方应用：前后端分离
     'rest_framework',
+    # 第三方应用：过滤
     'django_filters',
+    # 第三方应用：解决跨域问题
     'corsheaders',
     'rest_framework.authtoken',
     'social_django',
@@ -49,7 +51,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # 第三方中间件：跨域中间件应该尽可能的放在前面
     'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -59,6 +63,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# 跨域配置
 CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'mxshop.urls'
@@ -137,7 +142,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # 认证
 AUTHENTICATION_BACKENDS = (
     # 设置邮箱和用户名和手机号均可登录
-    'users.views.CustomBackend',
+    'users.utils.CustomBackend',
     # 第三方登录
     'social_core.backends.weibo.WeiboOAuth2',
     'social_core.backends.weixin.WeixinOAuth2',
@@ -187,6 +192,7 @@ JWT_AUTH = {
     # 'JWT_VERIFY': True,
     # 'JWT_VERIFY_EXPIRATION': True,
     # 'JWT_LEEWAY': 0,
+    # 设置 token 过期时间
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=3),
     # 'JWT_AUDIENCE': None,
     # 'JWT_ISSUER': None,
@@ -194,6 +200,7 @@ JWT_AUTH = {
     # 'JWT_ALLOW_REFRESH': False,
     # 'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 
+    # JWT 跟前端保持一致，比如 “token” 这里设置成 JWT
     'JWT_AUTH_HEADER_PREFIX': 'JWT',
     # 'JWT_AUTH_COOKIE': None,
 }

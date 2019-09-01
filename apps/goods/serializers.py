@@ -6,12 +6,21 @@ from goods.models import Goods, Category, DetailSlide, IndexSlide, CategoryBrand
 
 
 class CategorySerializer3(serializers.ModelSerializer):
+    """
+    三级分类
+    """
+
     class Meta:
         model = Category
         fields = '__all__'
 
 
 class CategorySerializer2(serializers.ModelSerializer):
+    """
+    二级分类
+    """
+
+    # 在 pid 字段中定义的 related_name="sub_cat"
     sub_cat = CategorySerializer3(many=True)
 
     class Meta:
@@ -20,6 +29,10 @@ class CategorySerializer2(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """
+    一级分类
+    """
+
     sub_cat = CategorySerializer2(many=True)
 
     class Meta:

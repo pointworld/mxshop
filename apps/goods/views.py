@@ -1,5 +1,4 @@
 from rest_framework import viewsets, mixins, filters
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -8,15 +7,9 @@ from rest_framework.response import Response
 from rest_framework_extensions.cache.mixins import CacheResponseMixin
 
 from goods.filters import GoodsFilter
+from goods.utils import GoodsPagination
 from .serializers import GoodsSerializer, CategorySerializer, IndexSlideSerializer, IndexCategorySerializer
 from .models import Goods, Category, IndexSlide
-
-
-class GoodsPagination(PageNumberPagination):
-    page_size = 12
-    page_size_query_param = 'page_size'
-    page_query_param = 'page'
-    max_page_size = 100
 
 
 class GoodsListViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
