@@ -21,7 +21,7 @@ import django
 django.setup()
 
 
-from goods.models import Goods, GoodsCategory, GoodsImage
+from goods.models import Goods, GoodsCategory, DetailSlide
 from db_tools.data.product_data import row_data
 
 for goods_detail in row_data:
@@ -41,7 +41,7 @@ for goods_detail in row_data:
     goods.save()
 
     for goods_image in goods_detail['images']:
-        goods_image_instance = GoodsImage()
+        goods_image_instance = DetailSlide()
         goods_image_instance.image = goods_image
         goods_image_instance.goods = goods
         goods_image_instance.save()

@@ -23,8 +23,8 @@ class GoodsFilter(django_filters.filterset.FilterSet):
     def top_category_filter(self, queryset, name, value):
         return queryset.filter(
             Q(category_id=value)
-            | Q(category__parent_category_id=value)
-            | Q(category__parent_category__parent_category_id=value)
+            | Q(category__pid_id=value)
+            | Q(category__pid__pid_id=value)
         )
 
     class Meta:

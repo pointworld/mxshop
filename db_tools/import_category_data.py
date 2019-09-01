@@ -30,7 +30,7 @@ for lev1_cat in row_data:
     lev1_instance = GoodsCategory()
     lev1_instance.name = lev1_cat['name']
     lev1_instance.code = lev1_cat['code']
-    lev1_instance.category_type = 1
+    lev1_instance.level = 1
     lev1_instance.save()
 
     # 该一级分类之下的二级分类
@@ -38,8 +38,8 @@ for lev1_cat in row_data:
         lev2_instance = GoodsCategory()
         lev2_instance.name = lev2_cat['name']
         lev2_instance.code = lev2_cat['code']
-        lev2_instance.category_type = 2
-        lev2_instance.parent_category = lev1_instance
+        lev2_instance.level = 2
+        lev2_instance.pid = lev1_instance
         lev2_instance.save()
 
         # 该二级分类之下的三级分类
@@ -47,6 +47,6 @@ for lev1_cat in row_data:
             lev3_instance = GoodsCategory()
             lev3_instance.name = lev3_cat['name']
             lev3_instance.code = lev3_cat['code']
-            lev3_instance.category_type = 3
-            lev3_instance.parent_category = lev2_instance
+            lev3_instance.level = 3
+            lev3_instance.pid = lev2_instance
             lev3_instance.save()

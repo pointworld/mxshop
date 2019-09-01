@@ -4,12 +4,12 @@ from django.db import models
 from froala_editor.fields import FroalaField
 
 
-class GoodsCategory(models.Model):
+class Category(models.Model):
     """
     商品分类
     """
 
-    CATEGORY_TYPE = (
+    LEVEL = (
         (1, '一级类目'),
         (2, '二级类目'),
         (3, '三级类目'),
@@ -21,8 +21,8 @@ class GoodsCategory(models.Model):
     name = models.CharField(max_length=30, default='', verbose_name='类别名', help_text='类别名')
     code = models.CharField(max_length=30, default='', verbose_name='类别 code', help_text='类别 code')
     desc = models.TextField(default='', verbose_name='类别描述', help_text='类别描述')
-    category_type = models.IntegerField(choices=CATEGORY_TYPE, verbose_name='类目级别', help_text='类目级别')
-    parent_category = models.ForeignKey(
+    level = models.IntegerField(choices=LEVEL, verbose_name='类目级别', help_text='类目级别')
+    pid = models.ForeignKey(
         'self',
         null=True,
         blank=True,
@@ -42,13 +42,13 @@ class GoodsCategory(models.Model):
         return self.name
 
 
-class GoodsCategoryBrand(models.Model):
+class CategoryBrand(models.Model):
     """
     某一大类下的宣传商标
     商品的某一个类下又会有多个宣传的商标
     """
 
-    category = models.ForeignKey(GoodsCategory, related_name='brands', null=True, blank=True,
+    category = models.ForeignKey(Category, related_name='brands', null=True, blank=True,
                                  on_delete=models.CASCADE, verbose_name='商品类目')
     name = models.CharField(default='', max_length=30, verbose_name='品牌名', help_text='品牌名')
     desc = models.TextField(default='', max_length=200, verbose_name='品牌描述', help_text='品牌描述')
@@ -68,7 +68,7 @@ class Goods(models.Model):
     商品
     """
 
-    category = models.ForeignKey(GoodsCategory, on_delete=models.CASCADE, verbose_name='商品类目')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='商品类目')
     # 默认生成的 id 是数据库做关联，查询用的，但是实际商品还有自己的 sn 码（serial number）
     sn = models.CharField(max_length=50, default='', verbose_name='商品唯一货号')
     name = models.CharField(max_length=100, verbose_name='商品名', help_text='商品名')
@@ -87,9 +87,9 @@ class Goods(models.Model):
     # 首页中展示的商品封面图
     cover = models.ImageField(upload_to='goods/images/', null=True, blank=True, verbose_name='封面图')
     # 首页中新品展示
-    is_new = models.IntegerField(default=False, verbose_name='是否新品')
+    is_new = models.BooleanField(default=False, verbose_name='是否新品')
     # 商品详情页的热卖商品
-    is_hot = models.IntegerField(default=False, verbose_name='是否热销')
+    is_hot = models.BooleanField(default=False, verbose_name='是否热销')
     add_time = models.DateTimeField(default=datetime.now, verbose_name='添加时间')
 
     class Meta:
@@ -102,10 +102,10 @@ class Goods(models.Model):
 
 class IndexGoodsAd(models.Model):
     """
-    商品广告
+    首页商品类别广告
     """
 
-    category = models.ForeignKey(GoodsCategory, on_delete=models.CASCADE, verbose_name='商品类目')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='商品类目')
     goods = models.ForeignKey(Goods, on_delete=models.CASCADE, verbose_name='商品')
 
     class Meta:
@@ -116,7 +116,7 @@ class IndexGoodsAd(models.Model):
         return self.goods.name
 
 
-class GoodsImage(models.Model):
+class DetailSlide(models.Model):
     """
     商品详情页轮播图
     """
@@ -133,7 +133,7 @@ class GoodsImage(models.Model):
         return self.goods.name
 
 
-class Banner(models.Model):
+class IndexSlide(models.Model):
     """
     首页轮播的商品图，适配首页大图
     因为首页的商品轮播图片是大图，跟商品详情里面的图片不一样，所以要单独写一个首页轮播图 model

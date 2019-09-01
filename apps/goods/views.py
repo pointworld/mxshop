@@ -8,8 +8,8 @@ from rest_framework.response import Response
 from rest_framework_extensions.cache.mixins import CacheResponseMixin
 
 from goods.filters import GoodsFilter
-from .serializers import GoodsSerializer, CategorySerializer, BannerSerializer, IndexCategorySerializer
-from .models import Goods, GoodsCategory, Banner
+from .serializers import GoodsSerializer, CategorySerializer, IndexSlideSerializer, IndexCategorySerializer
+from .models import Goods, Category, IndexSlide
 
 
 class GoodsPagination(PageNumberPagination):
@@ -41,23 +41,23 @@ class GoodsListViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.Retriev
         return Response(serializer.data)
 
 
-class CategoryViewSet(CacheResponseMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class CategoryViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
     list:
     商品分类列表数据
     retrieve:
     获取商品分类详情
     """
-    queryset = GoodsCategory.objects.filter(category_type=1)
+    queryset = Category.objects.filter(level=1)
     serializer_class = CategorySerializer
 
 
-class BannerViewSet(CacheResponseMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+class IndexSlideViewSet(CacheResponseMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
     """
     获取首页轮播图列表
     """
-    queryset = Banner.objects.all().order_by('index')
-    serializer_class = BannerSerializer
+    queryset = IndexSlide.objects.all().order_by('index')
+    serializer_class = IndexSlideSerializer
 
 
 class IndexCategoryViewSet(CacheResponseMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
@@ -65,5 +65,5 @@ class IndexCategoryViewSet(CacheResponseMixin, mixins.ListModelMixin, viewsets.G
     首页商品分类数据
     """
 
-    queryset = GoodsCategory.objects.filter(is_tab=True, name__in=['生鲜食品', '酒水饮料'])
+    queryset = Category.objects.filter(is_tab=True, name__in=['生鲜食品', '酒水饮料'])
     serializer_class = IndexCategorySerializer
