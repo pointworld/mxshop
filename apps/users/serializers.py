@@ -22,6 +22,7 @@ class SmsSerializer(serializers.Serializer):
         :param data:
         :return:
         """
+
         # 验证手机是否已注册
         if User.objects.filter(mobile=mobile).count():
             raise serializers.ValidationError('用户已经存在')

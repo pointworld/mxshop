@@ -6,10 +6,10 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS += [
     # 第三方应用：django 开发之性能强大的检测工具
-    'debug_toolbar',
+    # 'debug_toolbar',
 ]
 
-MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
+# MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ## 数据库相关配置
 

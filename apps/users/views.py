@@ -23,6 +23,7 @@ class SmsCodeViewSet(CreateModelMixin, viewsets.GenericViewSet):
     """
     发送短信验证码
     """
+
     serializer_class = SmsSerializer
 
     def generate_code(self):
@@ -30,6 +31,7 @@ class SmsCodeViewSet(CreateModelMixin, viewsets.GenericViewSet):
         生成四位数字的验证码
         :return:
         """
+
         seeds = '1234567890'
         random_str = []
         for i in range(4):
@@ -42,7 +44,7 @@ class SmsCodeViewSet(CreateModelMixin, viewsets.GenericViewSet):
         # 有效性验证失败会直接抛异常（400 页面）
         serializer.is_valid(raise_exception=True)
 
-        yun_pian = YunPian(settings.APIKEY)
+        yun_pian = YunPian(settings.YUNPIAN_APIKEY)
 
         mobile = serializer.validated_data['mobile']
         code = self.generate_code()

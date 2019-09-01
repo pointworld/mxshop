@@ -15,13 +15,13 @@ import sys
 pwd = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(pwd + '../')
 # manage.py 中
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mxshop.settings')
-
+env = os.environ.get('PROJECT_ENV', 'dev')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mxshop.settings.{}'.format(env))
 import django
 django.setup()
 
 
-from goods.models import Goods, GoodsCategory, DetailSlide
+from goods.models import Goods, Category, DetailSlide
 from db_tools.data.product_data import row_data
 
 for goods_detail in row_data:
@@ -35,7 +35,7 @@ for goods_detail in row_data:
     goods.cover = goods_detail['images'][0] if goods_detail['images'] else ''
 
     category_name = goods_detail['categorys'][-1]
-    category = GoodsCategory.objects.filter(name=category_name)
+    category = Category.objects.filter(name=category_name)
     if category:
         goods.category = category[0]
     goods.save()

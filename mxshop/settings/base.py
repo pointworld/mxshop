@@ -209,7 +209,9 @@ JWT_AUTH = {
 REGEXP_MOBILE = '^1[358]\d{9}$|^147\d{8}$|^176\d{8}$'
 
 # 云片网设置
-APIKEY = 'apikey 的值'
+YUNPIAN_APIKEY = config('YUNPIAN_APIKEY')
+YUNPIAN_TEST_MOBILE = config('YUNPIAN_TEST_MOBILE')
+YUNPIAN_SIGNATURE = config('YUNPIAN_SIGNATURE')
 
 # 支付宝相关配置
 PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/trade/keys/private_2048.txt')
