@@ -1,19 +1,14 @@
-#!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
-from rest_framework.validators import UniqueValidator
-
-__author__ = 'point'
-__date__ = '2018-12-24'
-
 import re
-
 from datetime import datetime, timedelta
-from django.contrib.auth import get_user_model
 
-from mxshop.settings import REGEXP_MOBILE
-from users.models import AuthCode
+from django.contrib.auth import get_user_model
+from django.conf import settings
 
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+
+from users.models import AuthCode
+
 
 User = get_user_model()
 
@@ -32,7 +27,7 @@ class SmsSerializer(serializers.Serializer):
             raise serializers.ValidationError('用户已经存在')
 
         # 验证手机号码是否合法
-        if not re.match(REGEXP_MOBILE, mobile):
+        if not re.match(settings.REGEXP_MOBILE, mobile):
             raise serializers.ValidationError('手机号码不合法')
 
         # 验证发送频率

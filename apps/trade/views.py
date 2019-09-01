@@ -1,19 +1,18 @@
-# Create your views here.
-
-import time
 from datetime import datetime
 
-from random import Random
-
 from django.shortcuts import redirect
+from django.conf import settings
 
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets, mixins
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from utils.permissions import IsOwnerOrReadOnly
+from utils.alipay import AliPay
 from .serializers import CartSerializer, CartDetailSerializer, OrderSerializer, OrderDetailSerializer
 from .models import Cart, Order, OrderGoods
 
@@ -102,12 +101,6 @@ class OrderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Crea
         return order
 
 
-from rest_framework.views import APIView
-from utils.alipay import AliPay
-from mxshop.settings import PRIVATE_KEY_PATH, ALIPAY_PUB_KEY_PATH
-from rest_framework.response import Response
-
-
 class AlipayView(APIView):
     def get(self, request):
         """
@@ -128,9 +121,9 @@ class AlipayView(APIView):
             # 这个值先不管，在与 vue 的联调中介绍
             app_notify_url="http://132.232.184.182:8000/alipay/return/",
             # 我们自己商户的密钥
-            app_private_key_path=PRIVATE_KEY_PATH,
+            app_private_key_path=settings.PRIVATE_KEY_PATH,
             # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
-            alipay_public_key_path=ALIPAY_PUB_KEY_PATH,
+            alipay_public_key_path=settings.ALIPAY_PUB_KEY_PATH,
             # 先不用管，后面 vue 解释
             return_url="http://132.232.184.182:8000/alipay/return/",
             # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False
@@ -179,9 +172,9 @@ class AlipayView(APIView):
             # 这个值先不管，在与 vue 的联调中介绍
             app_notify_url="http://132.232.184.182:8000/alipay/return/",
             # 我们自己商户的密钥
-            app_private_key_path=PRIVATE_KEY_PATH,
+            app_private_key_path=settings.PRIVATE_KEY_PATH,
             # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
-            alipay_public_key_path=ALIPAY_PUB_KEY_PATH,
+            alipay_public_key_path=settings.ALIPAY_PUB_KEY_PATH,
             # 先不用管，后面 vue 解释
             return_url="http://132.232.184.182:8000/alipay/return/",
             # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False

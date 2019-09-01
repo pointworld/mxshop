@@ -1,20 +1,14 @@
-#!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
 import time
 from random import Random
 
-from utils.alipay import AliPay
-
-__author__ = 'point'
-__date__ = '2018-12-25'
+from django.conf import settings
 
 from rest_framework import serializers
 
 from goods.models import Goods
 from .models import Cart, Order, OrderGoods
 from goods.serializers import GoodsSerializer
-from mxshop.settings import ALIPAY_PUB_KEY_PATH, PRIVATE_KEY_PATH
-
+from utils.alipay import AliPay
 
 class CartDetailSerializer(serializers.ModelSerializer):
     goods = GoodsSerializer(many=False)
@@ -83,9 +77,9 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             # 这个值先不管，在与 vue 的联调中介绍
             app_notify_url="http://132.232.184.182:8000/alipay/return/",
             # 我们自己商户的密钥
-            app_private_key_path=PRIVATE_KEY_PATH,
+            app_private_key_path=settings.PRIVATE_KEY_PATH,
             # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
-            alipay_public_key_path=ALIPAY_PUB_KEY_PATH,
+            alipay_public_key_path=settings.ALIPAY_PUB_KEY_PATH,
             # 先不用管，后面 vue 解释
             return_url="http://132.232.184.182:8000/alipay/return/",
             # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False
@@ -129,9 +123,9 @@ class OrderSerializer(serializers.ModelSerializer):
             # 这个值先不管，在与 vue 的联调中介绍
             app_notify_url="http://132.232.184.182:8000/alipay/return/",
             # 我们自己商户的密钥
-            app_private_key_path=PRIVATE_KEY_PATH,
+            app_private_key_path=settings.PRIVATE_KEY_PATH,
             # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
-            alipay_public_key_path=ALIPAY_PUB_KEY_PATH,
+            alipay_public_key_path=settings.ALIPAY_PUB_KEY_PATH,
             # 先不用管，后面 vue 解释
             return_url="http://132.232.184.182:8000/alipay/return/",
             # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False

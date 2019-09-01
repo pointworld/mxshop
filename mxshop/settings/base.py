@@ -1,17 +1,17 @@
-import datetime
 import os
 import sys
+import datetime
+
+from decouple import config
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # sys.path.insert(0, BASE_DIR)
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 sys.path.insert(0, os.path.join(BASE_DIR, 'extra_apps'))
 
-SECRET_KEY = 'rbjvvf#dsm5!+5d51aod8%10-r4@jcwe4lkj3bxe@mx%rv2*t('
-
-DEBUG = True
+SECRET_KEY = config('SECRET_KEY')
 
 ALLOWED_HOSTS = ['*']
 
@@ -232,13 +232,13 @@ CACHES = {
 }
 
 # 第三方登录
-SOCIAL_AUTH_WEIBO_KEY = '545785279'
-SOCIAL_AUTH_WEIBO_SECRET = 'd0e9b79451bc50237a38bf42c71be563'
+SOCIAL_AUTH_WEIBO_KEY = config('SOCIAL_AUTH_WEIBO_KEY')
+SOCIAL_AUTH_WEIBO_SECRET = config('SOCIAL_AUTH_WEIBO_SECRET')
 
-SOCIAL_AUTH_QQ_KEY = ''
-SOCIAL_AUTH_QQ_SECRET = ''
+SOCIAL_AUTH_QQ_KEY = config('SOCIAL_AUTH_QQ_KEY')
+SOCIAL_AUTH_QQ_SECRET = config('SOCIAL_AUTH_QQ_SECRET')
 
-SOCIAL_AUTH_WEIXIN_KEY = ''
-SOCIAL_AUTH_WEIXIN_SECRET = ''
+SOCIAL_AUTH_WEIXIN_KEY = config('SOCIAL_AUTH_WEIXIN_KEY')
+SOCIAL_AUTH_WEIXIN_SECRET = config('SOCIAL_AUTH_WEIXIN_SECRET')
 
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index/'

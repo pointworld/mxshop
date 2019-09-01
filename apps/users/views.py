@@ -1,6 +1,7 @@
 from random import choice
 
 from django.contrib.auth import get_user_model
+from django.conf import settings
 
 from rest_framework import mixins, permissions, authentication
 from rest_framework.mixins import CreateModelMixin
@@ -10,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework_jwt.serializers import jwt_payload_handler, jwt_encode_handler
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
-from mxshop.settings import APIKEY
 from users.models import AuthCode
 from .serializers import SmsSerializer, UserRegisterSerializer, UserDetailSerializer
 from utils.yunpian import YunPian
@@ -42,7 +42,7 @@ class SmsCodeViewSet(CreateModelMixin, viewsets.GenericViewSet):
         # 有效性验证失败会直接抛异常（400 页面）
         serializer.is_valid(raise_exception=True)
 
-        yun_pian = YunPian(APIKEY)
+        yun_pian = YunPian(settings.APIKEY)
 
         mobile = serializer.validated_data['mobile']
         code = self.generate_code()

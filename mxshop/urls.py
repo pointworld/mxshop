@@ -2,12 +2,12 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.static import serve
 from django.views.generic import TemplateView
+from django.conf import settings
 from rest_framework.documentation import include_docs_urls
 from rest_framework.routers import DefaultRouter
 
 from rest_framework_jwt.views import obtain_jwt_token
 
-from mxshop.settings import MEDIA_ROOT
 from goods.views import GoodsListViewSet, CategoryViewSet, IndexSlideViewSet, IndexCategoryViewSet
 from trade.views import CartViewSet, OrderViewSet
 from trade.views import AlipayView
@@ -53,7 +53,7 @@ router.register('index_goods', IndexCategoryViewSet, base_name='index_goods')
 urlpatterns = [
     path('', include(router.urls)),
     path('admin/', admin.site.urls),
-    re_path('media/(?P<path>.*)', serve, {'document_root': MEDIA_ROOT}),
+    re_path('media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT}),
     # 接口文档
     path('docs/', include_docs_urls(title='mxshop')),
     path('api-auth/', include('rest_framework.urls')),

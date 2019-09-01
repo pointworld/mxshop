@@ -1,14 +1,7 @@
-#!/usr/bin/env python3
-# _*_ coding: utf-8 _*_
-
-__author__ = 'point'
-__date__ = '2018-12-24'
-
 import json
 
 import requests
-
-from mxshop.settings import APIKEY
+from django.conf import settings
 
 
 class YunPian(object):
@@ -29,5 +22,5 @@ class YunPian(object):
 
 
 if __name__ == '__main__':
-    yun_pian = YunPian(APIKEY)
+    yun_pian = YunPian(settings.APIKEY)
     yun_pian.send_sms('2018', '手机号')
