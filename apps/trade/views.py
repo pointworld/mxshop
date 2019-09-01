@@ -14,11 +14,11 @@ from rest_framework import viewsets, mixins
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 
 from utils.permissions import IsOwnerOrReadOnly
-from .serializers import ShoppingCartSerializer, ShoppingCartDetailSerializer, OrderSerializer, OrderDetailSerializer
-from .models import ShoppingCart, OrderInfo, OrderGoods
+from .serializers import CartSerializer, CartDetailSerializer, OrderSerializer, OrderDetailSerializer
+from .models import Cart, Order, OrderGoods
 
 
-class ShoppingCartViewSet(viewsets.ModelViewSet):
+class CartViewSet(viewsets.ModelViewSet):
     """
     购物车功能开发
     list:
@@ -31,18 +31,18 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
     """
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
-    serializer_class = ShoppingCartSerializer
+    serializer_class = CartSerializer
 
     lookup_field = 'goods_id'
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return ShoppingCartDetailSerializer
+            return CartDetailSerializer
         else:
-            return ShoppingCartSerializer
+            return CartSerializer
 
     def get_queryset(self):
-        return ShoppingCart.objects.filter(user=self.request.user)
+        return Cart.objects.filter(user=self.request.user)
 
     # 库存数-1
     def perform_create(self, serializer):
@@ -60,7 +60,7 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
 
     # 更新库存
     def perform_update(self, serializer):
-        cart = ShoppingCart.objects.get(id=serializer.instance.id)
+        cart = Cart.objects.get(id=serializer.instance.id)
         nums_in_cart = cart.nums
         saved_record = serializer.save()
         # 变化的数量
@@ -81,7 +81,7 @@ class OrderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Crea
     serializer_class = OrderSerializer
 
     def get_queryset(self):
-        return OrderInfo.objects.filter(user=self.request.user)
+        return Order.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
@@ -90,7 +90,7 @@ class OrderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Crea
 
     def perform_create(self, serializer):
         order = serializer.save()
-        shopping_carts = ShoppingCart.objects.filter(user=self.request.user)
+        shopping_carts = Cart.objects.filter(user=self.request.user)
         for shopping_cart in shopping_carts:
             order_goods = OrderGoods()
             order_goods.goods = shopping_cart.goods
@@ -145,7 +145,7 @@ class AlipayView(APIView):
             # trade_status = processed_dict.get('trade_status', None)
             trade_status = processed_dict.get('trade_status', 'TRADE_SUCCESS')
 
-            existed_orders = OrderInfo.objects.filter(order_sn=order_sn)
+            existed_orders = Order.objects.filter(order_sn=order_sn)
             for existed_order in existed_orders:
                 existed_order.pay_status = trade_status
                 existed_order.trade_no = trade_no
@@ -198,7 +198,7 @@ class AlipayView(APIView):
             trade_status = processed_dict.get('trade_status', None)
 
             # 查询数据库中存在的订单
-            existed_orders = OrderInfo.objects.filter(order_sn=order_sn)
+            existed_orders = Order.objects.filter(order_sn=order_sn)
             for existed_order in existed_orders:
 
                 # 商品销量

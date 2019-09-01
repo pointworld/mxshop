@@ -11,20 +11,20 @@ __date__ = '2018-12-25'
 from rest_framework import serializers
 
 from goods.models import Goods
-from .models import ShoppingCart, OrderInfo, OrderGoods
+from .models import Cart, Order, OrderGoods
 from goods.serializers import GoodsSerializer
 from mxshop.settings import ALIPAY_PUB_KEY_PATH, PRIVATE_KEY_PATH
 
 
-class ShoppingCartDetailSerializer(serializers.ModelSerializer):
+class CartDetailSerializer(serializers.ModelSerializer):
     goods = GoodsSerializer(many=False)
 
     class Meta:
-        model = ShoppingCart
+        model = Cart
         fields = '__all__'
 
 
-class ShoppingCartSerializer(serializers.Serializer):
+class CartSerializer(serializers.Serializer):
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )
@@ -40,14 +40,14 @@ class ShoppingCartSerializer(serializers.Serializer):
         nums = validated_data['nums']
         goods = validated_data['goods']
 
-        existed = ShoppingCart.objects.filter(user=user, goods=goods)
+        existed = Cart.objects.filter(user=user, goods=goods)
 
         if existed:
             existed = existed[0]
             existed.nums += nums
             existed.save()
         else:
-            existed = ShoppingCart.objects.create(**validated_data)
+            existed = Cart.objects.create(**validated_data)
 
         return existed
 
@@ -99,7 +99,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             # 我们商户自行生成的订单号
             out_trade_no=obj.order_sn,
             # 订单金额
-            total_amount=obj.order_amount,
+            total_amount=obj.mount,
         )
         # 将生成的请求字符串拿到我们的url中进行拼接
         re_url = "https://openapi.alipaydev.com/gateway.do?{data}".format(data=url)
@@ -107,7 +107,7 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         return re_url
 
     class Meta:
-        model = OrderInfo
+        model = Order
         fields = '__all__'
 
 
@@ -145,7 +145,7 @@ class OrderSerializer(serializers.ModelSerializer):
             # 我们商户自行生成的订单号
             out_trade_no=obj.order_sn,
             # 订单金额
-            total_amount=obj.order_amount,
+            total_amount=obj.mount,
         )
         # 将生成的请求字符串拿到我们的url中进行拼接
         re_url = "https://openapi.alipaydev.com/gateway.do?{data}".format(data=url)
@@ -166,5 +166,5 @@ class OrderSerializer(serializers.ModelSerializer):
         return attrs
 
     class Meta:
-        model = OrderInfo
+        model = Order
         fields = '__all__'

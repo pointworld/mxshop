@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-class ShoppingCart(models.Model):
+class Cart(models.Model):
     """
     购物车
     """
@@ -28,7 +28,7 @@ class ShoppingCart(models.Model):
         return '%s(%d)'.format(self.goods.name, self.nums)
 
 
-class OrderInfo(models.Model):
+class Order(models.Model):
     """
     订单信息
     """
@@ -50,14 +50,16 @@ class OrderInfo(models.Model):
     order_sn = models.CharField(max_length=30, null=True, blank=True, unique=True, verbose_name='订单唯一编号')
     # 支付宝支付时的交易号与本系统订单进行关联
     trade_no = models.CharField(max_length=100, unique=True, null=True, blank=True, verbose_name='支付宝交易号')
+    # 微信支付会用到
+    nonce_str = models.CharField(max_length=50, null=True, blank=True, unique=True, verbose_name="随机加密串")
     pay_status = models.CharField(choices=PAY_STATUS, default='paying', max_length=20, verbose_name='支付状态')
     pay_type = models.CharField(max_length=20, choices=PAY_TYPE, default='alipay', verbose_name='支付类型')
-    order_additional_msg = models.CharField(max_length=200, verbose_name='订单留言')
-    order_amount = models.FloatField(default=0.0, verbose_name='订单金额')
+    leave_msg = models.CharField(max_length=200, verbose_name='订单留言')
+    mount = models.FloatField(default=0.0, verbose_name='订单金额')
     pay_time = models.DateTimeField(null=True, blank=True, verbose_name='支付时间')
 
     # 用户信息
-    address = models.CharField(max_length=100, default='', verbose_name='收货地址')
+    address = models.CharField(max_length=100, default='', verbose_name='收货人地址')
     signer_name = models.CharField(max_length=20, default='', verbose_name='签收人')
     signer_mobile = models.CharField(max_length=11, verbose_name='签收者电话')
 
@@ -77,7 +79,7 @@ class OrderGoods(models.Model):
     """
 
     # 一个订单对应多个商品
-    order = models.ForeignKey(OrderInfo, on_delete=models.CASCADE, related_name='goods', verbose_name='订单信息')
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='goods', verbose_name='订单信息')
     # 两个外键形成一张关联表
     goods = models.ForeignKey(Goods, on_delete=models.CASCADE, verbose_name='商品')
     goods_nums = models.IntegerField(default=0, verbose_name='商品数量')
