@@ -81,8 +81,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             # 最近的一个验证码
             last_record = verify_records[0]
 
-            # 有效期为五分钟
-            five_minutes_ago = datetime.now() - timedelta(hours=0, minutes=5, seconds=0)
+            # 有效期为十五分钟
+            five_minutes_ago = datetime.now() - timedelta(hours=0, minutes=15, seconds=0)
             if five_minutes_ago > last_record.add_time:
                 raise serializers.ValidationError('验证码过期')
 
@@ -98,6 +98,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         :param attrs:
         :return:
         """
+
         attrs['mobile'] = attrs['username']
         del attrs['code']
         return attrs

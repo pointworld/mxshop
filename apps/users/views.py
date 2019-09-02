@@ -50,34 +50,34 @@ class SmsCodeViewSet(CreateModelMixin, viewsets.GenericViewSet):
 
         sms_status = yun_pian.send_sms(code=code, mobile=mobile)
 
+        # code 为 0，表示发送成功
         if sms_status['code'] != 0:
             return Response({
                 'mobile': sms_status['msg']
             }, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            code_record = AuthCode(code=code, mobile=mobile)
-            code_record.save()
-            return Response({
-                'mobile': mobile
-            }, status=status.HTTP_201_CREATED)
+
+        # 发送成功后，将手机号和对应的验证码入库
+        code_record = AuthCode(code=code, mobile=mobile)
+        code_record.save()
+        return Response({
+            'mobile': mobile
+        }, status=status.HTTP_201_CREATED)
 
 
 class UserViewSet(CreateModelMixin, mixins.UpdateModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """
-    用户
+    用户：增改查
     """
 
-    serializer_class = UserRegisterSerializer
     queryset = User.objects.all()
     authentication_classes = (JSONWebTokenAuthentication, authentication.SessionAuthentication)
 
-    # permission_classes = (permissions.IsAuthenticated, )
-
     def get_serializer_class(self):
         """
-        动态选择用哪个序列化方式
+        动态选择用哪种序列化方式
         :return:
         """
+
         if self.action == 'retrieve':
             return UserDetailSerializer
         elif self.action == 'create':
@@ -91,6 +91,7 @@ class UserViewSet(CreateModelMixin, mixins.UpdateModelMixin, mixins.RetrieveMode
         2. 当想获取用户详情信息的时候，必须登录才行
         :return:
         """
+
         if self.action == 'retrieve':
             return [permissions.IsAuthenticated()]
         elif self.action == 'create':
