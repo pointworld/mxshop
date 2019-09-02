@@ -69,12 +69,22 @@ class BrandSerializer(serializers.ModelSerializer):
 
 
 class IndexCategorySerializer(serializers.ModelSerializer):
+    # 某个大类的商标，可以有多个商标，一对多的关系
     brands = BrandSerializer(many=True)
     goods = serializers.SerializerMethodField()
+    # 在 pid 字段中定义的 related_name="sub_cat"
+    # 取二级商品分类
     sub_cat = CategorySerializer2(many=True)
+    # 广告商品
     ad_goods = serializers.SerializerMethodField()
 
     def get_ad_goods(self, obj):
+        """
+        获取广告商品
+        :param obj:
+        :return:
+        """
+
         goods_json = {}
         ad_goods = IndexGoodsAd.objects.filter(category_id=obj.id)
         if ad_goods:

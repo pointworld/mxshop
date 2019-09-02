@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     # 第三方应用：解决跨域问题
     'corsheaders',
     'rest_framework.authtoken',
+    # 第三方应用：集成第三方登录
     'social_django',
     'froala_editor',
 
@@ -75,11 +76,14 @@ TEMPLATES = [
         ,
         'APP_DIRS': True,
         'OPTIONS': {
+            # 上下文管理器
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                # 第三方登录
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
@@ -145,8 +149,8 @@ AUTHENTICATION_BACKENDS = (
     'users.utils.CustomBackend',
     # 第三方登录
     'social_core.backends.weibo.WeiboOAuth2',
-    'social_core.backends.weixin.WeixinOAuth2',
-    'social_core.backends.qq.QQOAuth2',
+    # 'social_core.backends.weixin.WeixinOAuth2',
+    # 'social_core.backends.qq.QQOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -155,14 +159,16 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
-    # 'DEFAULT_THROTTLE_CLASSES': (
-    #     'rest_framework.throttling.AnonRateThrottle',
-    #     'rest_framework.throttling.UserRateThrottle'
-    # ),
-    # 'DEFAULT_THROTTLE_RATES': {
-    #     'anon': '100/day',
-    #     'user': '1000/day'
-    # },
+
+    # 限流相关配置
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/day',
+        'user': '1000/day'
+    },
 
     # 用于修复打开 docs/ 时的 bug
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
@@ -219,9 +225,10 @@ ALIPAY_PRI_KEY_PATH = os.path.join(BASE_DIR, config('ALIPAY_PRI_KEY_PATH'))
 ALIPAY_PUB_KEY_PATH = os.path.join(BASE_DIR, config('ALIPAY_PUB_KEY_PATH'))
 ALIPAY_APP_NOTIFY_URL=config('TEST_SERVER') + '/alipay/return/'
 
-## drf 插件相关设置
+## DRF 插件相关设置
 REST_FRAMEWORK_EXTENSIONS = {
-    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60
+    # 这个缓存使用的是内存，每次重启之后就会失效
+    'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60 # 1h 过期
 }
 
 ## 配置 Redis 缓存
@@ -246,4 +253,5 @@ SOCIAL_AUTH_QQ_SECRET = config('SOCIAL_AUTH_QQ_SECRET')
 SOCIAL_AUTH_WEIXIN_KEY = config('SOCIAL_AUTH_WEIXIN_KEY')
 SOCIAL_AUTH_WEIXIN_SECRET = config('SOCIAL_AUTH_WEIXIN_SECRET')
 
+# 用户登录成功之后，页面跳转
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index/'

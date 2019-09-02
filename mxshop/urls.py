@@ -64,6 +64,6 @@ urlpatterns = [
     path('login/', obtain_jwt_token),
     # 配置 支付宝支付相关 的接口
     path('alipay/return/', AlipayView.as_view(), name='alipay'),
-    # 第三方登录
+    # 集成第三方登录
     path('', include('social_django.urls', namespace='social')),
 ]
