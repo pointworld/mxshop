@@ -28,6 +28,7 @@ class CartViewSet(viewsets.ModelViewSet):
         加入购物车
     retrieve:
     """
+
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
     serializer_class = CartSerializer
@@ -108,10 +109,13 @@ class AlipayView(APIView):
         :param request:
         :return:
         """
+
         processed_dict = {}
+        # 获取 GET 中参数
         for key, value in request.GET.items():
             processed_dict[key] = value
 
+        # 取出 sign
         sign = processed_dict.pop('sign', None)
 
         # 测试用例
@@ -131,6 +135,7 @@ class AlipayView(APIView):
         )
 
         verify_ret = alipay.verify(processed_dict, sign)
+        # 这里可以不做操作。因为不管发不发 return url。notify url 都会修改订单状态
         if verify_ret is True:
             order_sn = processed_dict.get('out_trade_no', None)
             trade_no = processed_dict.get('trade_no', None)
@@ -158,6 +163,7 @@ class AlipayView(APIView):
         :param request:
         :return:
         """
+
         # 1. 先将 sign 剔除掉
         processed_dict = {}
         for key, value in request.POST.items():
@@ -186,8 +192,11 @@ class AlipayView(APIView):
 
         # 如果验签成功
         if verify_ret is True:
+            # 商户网站唯一订单号
             order_sn = processed_dict.get('out_trade_no', None)
+            # 支付宝系统交易流水号
             trade_no = processed_dict.get('trade_no', None)
+            # 交易状态
             trade_status = processed_dict.get('trade_status', None)
 
             # 查询数据库中存在的订单
@@ -201,10 +210,11 @@ class AlipayView(APIView):
                     goods.sold_nums += order_good.goods_nums
                     goods.save()
 
+                # 更新订单状态
                 existed_order.pay_status = trade_status
                 existed_order.trade_no = trade_no
                 existed_order.pay_time = datetime.now()
                 existed_order.save()
 
-            # 将success返回给支付宝，支付宝就不会一直不停的继续发消息了
+            # #需要返回一个 'success' 给支付宝，如果不返回，支付宝会一直发送订单支付成功的消息
             return Response('success')

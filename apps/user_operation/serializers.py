@@ -34,6 +34,7 @@ class UserFavSerializer(serializers.ModelSerializer):
 
 
 class UserLeavingMessageSerializer(serializers.ModelSerializer):
+    # 获取当前登录的用户
     user = serializers.HiddenField(
         default=serializers.CurrentUserDefault()
     )

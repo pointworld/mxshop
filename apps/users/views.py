@@ -74,6 +74,10 @@ class UserViewSet(CreateModelMixin, mixins.UpdateModelMixin, mixins.RetrieveMode
     # permission_classes = (permissions.IsAuthenticated, )
 
     def get_serializer_class(self):
+        """
+        动态选择用哪个序列化方式
+        :return:
+        """
         if self.action == 'retrieve':
             return UserDetailSerializer
         elif self.action == 'create':
@@ -81,6 +85,12 @@ class UserViewSet(CreateModelMixin, mixins.UpdateModelMixin, mixins.RetrieveMode
         return UserDetailSerializer
 
     def get_permissions(self):
+        """
+        这里需要动态权限配置
+        1. 用户注册的时候不应该有权限限制
+        2. 当想获取用户详情信息的时候，必须登录才行
+        :return:
+        """
         if self.action == 'retrieve':
             return [permissions.IsAuthenticated()]
         elif self.action == 'create':
@@ -101,6 +111,10 @@ class UserViewSet(CreateModelMixin, mixins.UpdateModelMixin, mixins.RetrieveMode
         return Response(ret_dict, status=status.HTTP_201_CREATED, headers=headers)
 
     def get_object(self):
+        """
+        获取登录的用户
+        :return:
+        """
         return self.request.user
 
     def perform_create(self, serializer):

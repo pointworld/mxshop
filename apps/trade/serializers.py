@@ -10,6 +10,7 @@ from .models import Cart, Order, OrderGoods
 from goods.serializers import GoodsSerializer
 from utils.alipay import AliPay
 
+
 class CartDetailSerializer(serializers.ModelSerializer):
     goods = GoodsSerializer(many=False)
 
@@ -36,10 +37,12 @@ class CartSerializer(serializers.Serializer):
 
         existed = Cart.objects.filter(user=user, goods=goods)
 
+        # 如果购物车中有记录，数量 + 1
         if existed:
             existed = existed[0]
             existed.nums += nums
             existed.save()
+        # 如果购物车车没有记录，就创建
         else:
             existed = Cart.objects.create(**validated_data)
 
@@ -52,6 +55,7 @@ class CartSerializer(serializers.Serializer):
         :param validated_data:
         :return:
         """
+
         instance.nums = validated_data['nums']
         instance.save()
         return instance
@@ -147,7 +151,12 @@ class OrderSerializer(serializers.ModelSerializer):
         return re_url
 
     def generate_order_sn(self):
-        # 当前时间 + userID + 随机数
+        """
+        生成订单号
+        当前时间 + userID + 随机数
+        :return:
+        """
+
         order_sn = '{time_str}{user_id}{random_str}'.format(
             time_str=time.strftime('%Y%m%d%H%M%S'),
             user_id=self.context['request'].user.id,
@@ -156,6 +165,7 @@ class OrderSerializer(serializers.ModelSerializer):
         return order_sn
 
     def validate(self, attrs):
+        # validate 中添加 order_sn，然后在 view 中就可以 save
         attrs['order_sn'] = self.generate_order_sn()
         return attrs
 

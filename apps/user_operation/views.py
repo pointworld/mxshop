@@ -54,10 +54,12 @@ class UserLeavingMessageViewSet(mixins.ListModelMixin, mixins.DestroyModelMixin,
     delete:
         删除留言功能
     """
+
     serializer_class = UserLeavingMessageSerializer
     permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
     authentication_classes = (JSONWebTokenAuthentication, SessionAuthentication)
 
+    # 只能看到自己的留言
     def get_queryset(self):
         return UserLeavingMessage.objects.filter(user=self.request.user)
 
