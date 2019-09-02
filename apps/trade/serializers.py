@@ -76,17 +76,11 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     def get_alipay_url(self, obj):
         alipay = AliPay(
-            # appid 在沙箱环境中就可以找到
-            appid="2016092300575055",
-            # 这个值先不管，在与 vue 的联调中介绍
-            app_notify_url="http://132.232.184.182:8000/alipay/return/",
-            # 我们自己商户的密钥
-            app_private_key_path=settings.PRIVATE_KEY_PATH,
-            # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
+            appid=settings.ALIPAY_APP_ID,
+            app_notify_url=settings.ALIPAY_APP_NOTIFY_URL,
+            app_private_key_path=settings.ALIPAY_PRI_KEY_PATH,
             alipay_public_key_path=settings.ALIPAY_PUB_KEY_PATH,
-            # 先不用管，后面 vue 解释
-            return_url="http://132.232.184.182:8000/alipay/return/",
-            # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False
+            return_url=settings.ALIPAY_APP_NOTIFY_URL,
             debug=True,
         )
 
@@ -97,9 +91,9 @@ class OrderDetailSerializer(serializers.ModelSerializer):
             # 我们商户自行生成的订单号
             out_trade_no=obj.order_sn,
             # 订单金额
-            total_amount=obj.mount,
+            total_amount=obj.order_amount,
         )
-        # 将生成的请求字符串拿到我们的url中进行拼接
+        # 将生成的请求字符串拿到我们的 url 中进行拼接
         re_url = "https://openapi.alipaydev.com/gateway.do?{data}".format(data=url)
 
         return re_url
@@ -122,17 +116,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_alipay_url(self, obj):
         alipay = AliPay(
-            # appid 在沙箱环境中就可以找到
-            appid="2016092300575055",
-            # 这个值先不管，在与 vue 的联调中介绍
-            app_notify_url="http://132.232.184.182:8000/alipay/return/",
-            # 我们自己商户的密钥
-            app_private_key_path=settings.PRIVATE_KEY_PATH,
-            # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
+            appid=settings.ALIPAY_APP_ID,
+            app_notify_url=settings.ALIPAY_APP_NOTIFY_URL,
+            app_private_key_path=settings.ALIPAY_PRI_KEY_PATH,
             alipay_public_key_path=settings.ALIPAY_PUB_KEY_PATH,
-            # 先不用管，后面 vue 解释
-            return_url="http://132.232.184.182:8000/alipay/return/",
-            # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False
+            return_url=settings.ALIPAY_APP_NOTIFY_URL,
             debug=True,
         )
 
@@ -143,9 +131,9 @@ class OrderSerializer(serializers.ModelSerializer):
             # 我们商户自行生成的订单号
             out_trade_no=obj.order_sn,
             # 订单金额
-            total_amount=obj.mount,
+            total_amount=obj.order_amount,
         )
-        # 将生成的请求字符串拿到我们的url中进行拼接
+        # 将生成的请求字符串拿到我们的 url 中进行拼接
         re_url = "https://openapi.alipaydev.com/gateway.do?{data}".format(data=url)
 
         return re_url

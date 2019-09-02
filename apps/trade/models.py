@@ -55,7 +55,7 @@ class Order(models.Model):
     pay_status = models.CharField(choices=PAY_STATUS, default='paying', max_length=20, verbose_name='支付状态')
     pay_type = models.CharField(max_length=20, choices=PAY_TYPE, default='alipay', verbose_name='支付类型')
     leave_msg = models.CharField(max_length=200, verbose_name='订单留言')
-    mount = models.FloatField(default=0.0, verbose_name='订单金额')
+    order_amount = models.FloatField(default=0.0, verbose_name='订单金额')
     pay_time = models.DateTimeField(null=True, blank=True, verbose_name='支付时间')
 
     # 用户信息

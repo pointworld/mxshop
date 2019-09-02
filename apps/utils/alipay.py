@@ -1,7 +1,10 @@
 import json
+import os
 from datetime import datetime
 from base64 import decodebytes, encodebytes
 from base64 import b64encode, b64decode
+
+import django
 
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
@@ -9,6 +12,12 @@ from Crypto.Hash import SHA256
 from urllib.parse import quote_plus
 from urllib.parse import urlparse, parse_qs
 from urllib.request import urlopen
+
+env = os.environ.get('PROJECT_ENV', 'dev')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mxshop.settings.{}'.format(env))
+django.setup()
+
+from django.conf import settings
 
 
 class AliPay:
@@ -18,12 +27,15 @@ class AliPay:
 
     def __init__(self, appid, app_notify_url, app_private_key_path,
                  alipay_public_key_path, return_url, debug=False):
+        # 支付宝分配给开发者的应用 ID
         self.appid = appid
+        # 支付宝服务器主动通知商户服务器里指定的页面 http/https 路径
         self.app_notify_url = app_notify_url
+        # HTTP/HTTPS 开头字符串
+        self.return_url = return_url
+
         # 私钥
         self.app_private_key_path = app_private_key_path
-        self.app_private_key = None
-        self.return_url = return_url
         with open(self.app_private_key_path) as fp:
             self.app_private_key = RSA.importKey(fp.read())
 
@@ -33,27 +45,47 @@ class AliPay:
             self.alipay_public_key = RSA.import_key(fp.read())
 
         if debug is True:
+            # 支付宝网关（沙箱环境）
             self.__gateway = "https://openapi.alipaydev.com/gateway.do"
         else:
+            # 支付宝网关（正式环境）
             self.__gateway = "https://openapi.alipay.com/gateway.do"
 
     def direct_pay(self, subject, out_trade_no, total_amount, return_url=None, **kwargs):
-        # 请求参数
+        """
+        直接支付
+        :param subject:
+        :param out_trade_no:
+        :param total_amount:
+        :param return_url:
+        :param kwargs:
+        :return:
+        """
+
+        # 请求参数的集合，最大长度不限，除公共参数外所有请求参数都必须放在这个参数中传递
         biz_content = {
+            # 订单标题
             "subject": subject,
+            # 商户订单号, 64个字符以内、可包含字母、数字、下划线；需保证在商户端不重复
             "out_trade_no": out_trade_no,
+            # 订单总金额，单位为元，精确到小数点后两位，取值范围[0.01,100000000]
             "total_amount": total_amount,
+            # 销售产品码，与支付宝签约的产品码名称。
+            # 注：目前仅支持FAST_INSTANT_TRADE_PAY
             "product_code": "FAST_INSTANT_TRADE_PAY",
+            # PC扫码支付的方式，支持前置模式和跳转模式
             # "qr_pay_mode":4
         }
 
-        # 允许传递更多参数，放到 biz_content
         biz_content.update(kwargs)
+        # 构建请求参数
         data = self.build_body("alipay.trade.page.pay", biz_content, self.return_url)
+        # 返回生成的签名字符串
         return self.sign_data(data)
 
     def build_body(self, method, biz_content, return_url=None):
         """
+        构建请求参数
         build_body 主要生产消息的格式
         :param method:
         :param biz_content:
@@ -63,24 +95,33 @@ class AliPay:
 
         # 公共请求参数
         data = {
+            # 支付宝分配给开发者的应用 ID
             "app_id": self.appid,
+            # 接口名称
             "method": method,
+            # 请求使用的编码格式，如 utf-8
             "charset": "utf-8",
+            # 商户生成签名字符串所使用的签名算法类型，目前支持RSA2和RSA，推荐使用RSA2
             "sign_type": "RSA2",
+            # 发送请求的时间，格式"yyyy-MM-dd HH:mm:ss"
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            # 调用的接口版本，固定为：1.0
             "version": "1.0",
+            # 请求参数的集合，最大长度不限，除公共参数外所有请求参数都必须放在这个参数中传递
             "biz_content": biz_content
         }
 
         if return_url is not None:
+            # 支付宝服务器主动通知商户服务器里指定的页面http/https路径
             data["notify_url"] = self.app_notify_url
+            # HTTP/HTTPS开头字符串
             data["return_url"] = self.return_url
 
         return data
 
     def sign_data(self, data):
         """
-
+        生成签名字符串
         :param data:
         :return:
         """
@@ -141,7 +182,7 @@ class AliPay:
 
     def verify(self, data, signature):
         if "sign_type" in data:
-            sign_type = data.pop("sign_type")
+            data.pop("sign_type")
         # 排序后的字符串
         unsigned_items = self.ordered_data(data)
         message = "&".join(u"{}={}".format(k, v) for k, v in unsigned_items)
@@ -149,43 +190,34 @@ class AliPay:
 
 
 if __name__ == "__main__":
-    return_url = "http://132.232.184.182:8000/alipay/return/?charset=utf-8&out_trade_no=20181226007&method=alipay.trade.page.pay.return&total_amount=9999.00&sign=BALdfrSw04jkZZPAzj7WZU3Pg%2Bf2CQyn%2BG1JwV%2BimFLwWFFJOGGkMnldKfRAeTHx%2F7bglFJKW5r4nWWYcXbQjp3o8EpCqi2GBMmt11bOEqdCp8i8ewbnugvgm%2FuYs7QfZtpyANk2Ee0xromVH1sG2mUuki%2B0DM%2FU%2F19BJvYTtrneSYQZn7QZTXODOyeEgMyRBC5IRRJ3FJlY86gj3FNRPpYWuyxESEIBgljV7mDl32DwOX9ae4umd%2BjaqBiAJo%2FkuTFOptgTskgYCwgshda8NJDOak%2FL6t3ONzRBGCcWbzLBeratoHVx2%2BoGeRq2gGiAaY%2BGX04HApZl9HOTVZ%2BvFA%3D%3D&trade_no=2018122622001471000501680048&auth_app_id=2016092300575055&version=1.0&app_id=2016092300575055&sign_type=RSA2&seller_id=2088102176859612&timestamp=2018-12-26+14%3A41%3A55"
-    # return_url = ''
-    o = urlparse(return_url)
-    query = parse_qs(o.query)
-    processed_query = {}
-    ali_sign = query.pop("sign", [''])[0]
+    app_notify_url = "http://shop.pointborn.com/alipay/return/"
 
     # 测试用例
     alipay = AliPay(
         # appid 在沙箱环境中就可以找到
-        appid="2016092300575055",
-        # 这个值先不管，在与 vue 的联调中介绍
-        app_notify_url="http://132.232.184.182:8000/alipay/return/",
+        appid=settings.ALIPAY_APP_ID,
+        # notify_url 是异步的 url
+        app_notify_url=app_notify_url,
         # 我们自己商户的密钥
-        app_private_key_path="../trade/keys/private_2048.txt",
+        app_private_key_path=settings.ALIPAY_PRI_KEY_PATH,
         # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
-        alipay_public_key_path="../trade/keys/alipay_key_2048.txt",
+        alipay_public_key_path=settings.ALIPAY_PUB_KEY_PATH,
         # 先不用管，后面 vue 解释
-        return_url="http://132.232.184.182:8000/alipay/return/",
+        return_url=app_notify_url,
         # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False
         debug=True,
     )
 
-    for key, value in query.items():
-        processed_query[key] = value[0]
-    print(alipay.verify(processed_query, ali_sign))
-
-    # 直接支付:生成请求的字符串。
+    # 直接支付: 生成请求的字符串
     url = alipay.direct_pay(
         # 订单标题
-        subject="测试订单",
+        subject="测试订单 pointborn",
         # 我们商户自行生成的订单号
-        out_trade_no="20181226011",
+        out_trade_no="20181226016",
         # 订单金额
-        total_amount=9999,
+        total_amount=888,
         # 成功付款后跳转到的页面
-        return_url="http://132.232.184.182:8000/alipay/return/"
+        return_url=app_notify_url
     )
     # 将生成的请求字符串拿到我们的 url 中进行拼接
     re_url = "https://openapi.alipaydev.com/gateway.do?{data}".format(data=url)

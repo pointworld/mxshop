@@ -121,25 +121,23 @@ class AlipayView(APIView):
         # 测试用例
         alipay = AliPay(
             # appid 在沙箱环境中就可以找到
-            appid="2016092300575055",
-            # 这个值先不管，在与 vue 的联调中介绍
-            app_notify_url="http://132.232.184.182:8000/alipay/return/",
+            appid=settings.ALIPAY_APP_ID,
+            app_notify_url=settings.ALIPAY_APP_NOTIFY_URL,
             # 我们自己商户的密钥
-            app_private_key_path=settings.PRIVATE_KEY_PATH,
+            app_private_key_path=settings.ALIPAY_PRI_KEY_PATH,
             # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
             alipay_public_key_path=settings.ALIPAY_PUB_KEY_PATH,
-            # 先不用管，后面 vue 解释
-            return_url="http://132.232.184.182:8000/alipay/return/",
+            return_url=settings.ALIPAY_APP_NOTIFY_URL,
             # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False
             debug=True,
         )
 
         verify_ret = alipay.verify(processed_dict, sign)
         # 这里可以不做操作。因为不管发不发 return url。notify url 都会修改订单状态
-        if verify_ret is True:
+        if verify_ret:
             order_sn = processed_dict.get('out_trade_no', None)
             trade_no = processed_dict.get('trade_no', None)
-            # FIXME: 支付宝接口会先发起post请求，再响应get请求。而returnurl的返回参数中并不包含我们的支付状态，所以会导致原本被post请求写入的支付状态被get请求获取不到的默认值none覆盖为空
+            # FIXME: 支付宝接口会先发起 post 请求，再响应 get 请求。而 returnurl 的返回参数中并不包含我们的支付状态，所以会导致原本被 post 请求写入的支付状态被 get 请求获取不到的默认值 none 覆盖为空
             # trade_status = processed_dict.get('trade_status', None)
             trade_status = processed_dict.get('trade_status', 'TRADE_SUCCESS')
 
@@ -174,15 +172,15 @@ class AlipayView(APIView):
         # 2. 生成一个 Alipay 对象
         alipay = AliPay(
             # appid 在沙箱环境中就可以找到
-            appid="2016092300575055",
+            appid=settings.ALIPAY_APP_ID,
             # 这个值先不管，在与 vue 的联调中介绍
-            app_notify_url="http://132.232.184.182:8000/alipay/return/",
+            app_notify_url=settings.ALIPAY_APP_NOTIFY_URL,
             # 我们自己商户的密钥
-            app_private_key_path=settings.PRIVATE_KEY_PATH,
+            app_private_key_path=settings.ALIPAY_PRI_KEY_PATH,
             # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥
             alipay_public_key_path=settings.ALIPAY_PUB_KEY_PATH,
             # 先不用管，后面 vue 解释
-            return_url="http://132.232.184.182:8000/alipay/return/",
+            return_url=settings.ALIPAY_APP_NOTIFY_URL,
             # debug 为 true 时使用沙箱的 url。如果不是则用正式环境的 url，默认 False
             debug=True,
         )
@@ -191,7 +189,7 @@ class AlipayView(APIView):
         verify_ret = alipay.verify(processed_dict, sign)
 
         # 如果验签成功
-        if verify_ret is True:
+        if verify_ret:
             # 商户网站唯一订单号
             order_sn = processed_dict.get('out_trade_no', None)
             # 支付宝系统交易流水号

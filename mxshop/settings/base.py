@@ -208,21 +208,23 @@ JWT_AUTH = {
 # 手机号码的正则表达式
 REGEXP_MOBILE = '^1[358]\d{9}$|^147\d{8}$|^176\d{8}$'
 
-# 云片网设置
+## 云片网设置
 YUNPIAN_APIKEY = config('YUNPIAN_APIKEY')
 YUNPIAN_TEST_MOBILE = config('YUNPIAN_TEST_MOBILE')
 YUNPIAN_SIGNATURE = config('YUNPIAN_SIGNATURE')
 
-# 支付宝相关配置
-PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/trade/keys/private_2048.txt')
-ALIPAY_PUB_KEY_PATH = os.path.join(BASE_DIR, 'apps/trade/keys/alipay_key_2048.txt')
+## 支付宝相关配置
+ALIPAY_APP_ID = config('ALIPAY_APP_ID')
+ALIPAY_PRI_KEY_PATH = os.path.join(BASE_DIR, config('ALIPAY_PRI_KEY_PATH'))
+ALIPAY_PUB_KEY_PATH = os.path.join(BASE_DIR, config('ALIPAY_PUB_KEY_PATH'))
+ALIPAY_APP_NOTIFY_URL=config('TEST_SERVER') + '/alipay/return/'
 
-# drf 插件相关设置
+## drf 插件相关设置
 REST_FRAMEWORK_EXTENSIONS = {
     'DEFAULT_CACHE_RESPONSE_TIMEOUT': 60 * 60
 }
 
-# 配置 Redis 缓存
+## 配置 Redis 缓存
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -233,7 +235,8 @@ CACHES = {
     }
 }
 
-# 第三方登录
+## 第三方登录
+
 SOCIAL_AUTH_WEIBO_KEY = config('SOCIAL_AUTH_WEIBO_KEY')
 SOCIAL_AUTH_WEIBO_SECRET = config('SOCIAL_AUTH_WEIBO_SECRET')
 

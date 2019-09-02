@@ -13,11 +13,11 @@ class CartAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['user', 'order_sn', 'trade_no', 'pay_status', 'pay_type', 'leave_msg', 'mount',
+    list_display = ['user', 'order_sn', 'trade_no', 'pay_status', 'pay_type', 'leave_msg', 'order_amount',
                     'add_time']
-    list_filter = ['user', 'order_sn', 'trade_no', 'pay_status', 'pay_type', 'leave_msg', 'mount',
+    list_filter = ['user', 'order_sn', 'trade_no', 'pay_status', 'pay_type', 'leave_msg', 'order_amount',
                    'add_time']
-    search_fields = ['user', 'order_sn', 'trade_no', 'pay_status', 'pay_type', 'leave_msg', 'mount']
+    search_fields = ['user', 'order_sn', 'trade_no', 'pay_status', 'pay_type', 'leave_msg', 'order_amount']
 
 
 class OrderGoodsAdmin(admin.ModelAdmin):
