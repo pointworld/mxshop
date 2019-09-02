@@ -77,6 +77,7 @@ class AliPay:
             # "qr_pay_mode":4
         }
 
+        # 允许传递更多参数，放到 biz_content
         biz_content.update(kwargs)
         # 构建请求参数
         data = self.build_body("alipay.trade.page.pay", biz_content, self.return_url)

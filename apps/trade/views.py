@@ -81,6 +81,10 @@ class OrderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Crea
     serializer_class = OrderSerializer
 
     def get_queryset(self):
+        """
+        获取和当前用户关联的订单列表
+        :return:
+        """
         return Order.objects.filter(user=self.request.user)
 
     def get_serializer_class(self):
@@ -89,6 +93,14 @@ class OrderViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Crea
         return OrderSerializer
 
     def perform_create(self, serializer):
+        """
+        在将订单提交保存之前还需要做两件事情，所以这里重写 preform_create 方法
+        1. 将购物车中的商品保存到 OrderGoods 中
+        2. 清空购物车
+        :param serializer:
+        :return:
+        """
+
         order = serializer.save()
         shopping_carts = Cart.objects.filter(user=self.request.user)
         for shopping_cart in shopping_carts:
@@ -115,7 +127,7 @@ class AlipayView(APIView):
         for key, value in request.GET.items():
             processed_dict[key] = value
 
-        # 取出 sign
+        # 取出签名 sign
         sign = processed_dict.pop('sign', None)
 
         # 测试用例
@@ -167,6 +179,7 @@ class AlipayView(APIView):
         for key, value in request.POST.items():
             processed_dict[key] = value
 
+        # 把 sign pop 掉，文档有说明
         sign = processed_dict.pop('sign', None)
 
         # 2. 生成一个 Alipay 对象

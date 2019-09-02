@@ -62,7 +62,7 @@ urlpatterns = [
     path('index/', TemplateView.as_view(template_name='index.html'), name='index'),
     # jwt 的认证接口
     path('login/', obtain_jwt_token),
-    # 配置 支付宝 的接口
+    # 配置 支付宝支付相关 的接口
     path('alipay/return/', AlipayView.as_view(), name='alipay'),
     # 第三方登录
     path('', include('social_django.urls', namespace='social')),
