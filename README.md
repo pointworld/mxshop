@@ -52,34 +52,38 @@
 
 ## 开发环境
 
-操作系统: MacOS, Linux
-开发工具: PyCharm + Vim
-后台语言: Python@3.7.x
-后台框架: Django@2.1.x
-数据库: MariaDB、Redis
-版本管理工具: Git
+- 操作系统: MacOS, Linux
+- 开发工具: PyCharm + Vim
+- 后台语言: Python@3.7.x
+- 后台框架: Django@2.1.x
+- 数据库: MariaDB、Redis
+- 版本管理工具: Git
 
 ## 后端核心环境依赖
 
-coreapi==2.3.3
-Django==2.1.4
-django-cors-headers==2.4.0x
-django-filter==2.0.0
-django-froala-editor==3.0.5
-django-guardian==1.4.9
-django-redis==4.10.0
-django-simpleui==2.8
-djangorestframework==3.10.2
-djangorestframework-jwt==1.11.0
-djangorestframework-simplejwt==3.3
-drf-extensions==0.5.0
-mysqlclient==1.3.13
-Pillow==5.3.0
-python-social-auth==0.3.6
-redis==3.3.8
-requests==2.21.0
-social-auth-core==3.2.0
+- coreapi==2.3.3
+- Django==2.1.4
+- django-cors-headers==2.4.0x
+- django-filter==2.0.0
+- django-froala-editor==3.0.5
+- django-guardian==1.4.9
+- django-redis==4.10.0
+- django-simpleui==2.8
+- djangorestframework==3.10.2
+- djangorestframework-jwt==1.11.0
+- djangorestframework-simplejwt==3.3
+- drf-extensions==0.5.0
+- mysqlclient==1.3.13
+- Pillow==5.3.0
+- python-social-auth==0.3.6
+- redis==3.3.8
+- requests==2.21.0
+- social-auth-core==3.2.0
 
 ## DRF 项目结构
+
+## 项目开发文档
+
+[项目开发文档](PROJECT.md)
 
 
