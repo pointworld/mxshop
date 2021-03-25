@@ -32,7 +32,7 @@ python-decouple==3.1
 python-social-auth==0.3.6
 python3-openid==3.1.0
 pytz==2018.7
-PyYAML==5.1.2
+PyYAML==5.4
 redis==3.3.8
 requests==2.21.0
 requests-oauthlib==1.2.0
